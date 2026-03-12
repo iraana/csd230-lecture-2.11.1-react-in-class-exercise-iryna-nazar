@@ -1,3 +1,163 @@
+CONTEXT FOR AI MODEL
+Generated from: /Users/iranazar/Desktop/26W/Advances Web App/lab5/csd230-lecture-2.11.1-react-in-class-exercise-iryna-nazar
+Timestamp: 2026-03-12-15-09
+
+--- PROJECT STRUCTURE ---
+|-- csd230-lecture-2.11.1-react-in-class-exercise-iryna-nazar/
+    |-- frontend/
+        |-- index.html
+        |-- vite.config.js
+        |-- README.md
+        |-- public/
+            |-- vite.svg
+        |-- .gitignore
+        |-- package-lock.json
+        |-- package.json
+        |-- eslint.config.js
+        |-- src/
+            |-- BookForm.jsx
+            |-- App.css
+            |-- index.css
+            |-- Book.jsx
+            |-- main.jsx
+            |-- App.jsx
+            |-- Navbar.jsx
+            |-- Home.jsx
+    |-- pom.xml
+    |-- .gitignore
+    |-- .gitattributes
+    |-- .files2ignore
+    |-- src/
+        |-- test/
+            |-- java/
+                |-- csd230/
+                    |-- ApplicationTests.java
+        |-- main/
+            |-- resources/
+                |-- static/
+                    |-- index.html
+                    |-- vite.svg
+                |-- application.properties
+            |-- java/
+                |-- csd230/
+                    |-- Application.java
+                    |-- seeder/
+                        |-- DataSeeder.java
+                    |-- repositories/
+                        |-- MagazineRepository.java
+                        |-- BookRepository.java
+                    |-- controllers/
+                        |-- MagazineController.java
+                        |-- BookController.java
+                    |-- entities/
+                        |-- ProductEntity.java
+                        |-- PublicationEntity.java
+                        |-- BookEntity.java
+                        |-- MagazineEntity.java
+                        |-- SaleableItem.java
+
+--------------------------------------------------
+
+--- FILE: frontend/index.html ---
+```
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+```
+
+--- FILE: frontend/vite.config.js ---
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+export default defineConfig({
+    plugins: [react()],
+    build: {
+        // Build directly to Spring Boot's static folder
+        outDir: '../src/main/resources/static',
+        emptyOutDir: true
+    },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                secure: false,
+            },
+        },
+    },
+})
+```
+
+--- FILE: frontend/README.md ---
+```
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+```
+
+--- FILE: frontend/public/vite.svg ---
+```
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+```
+
+--- FILE: frontend/.gitignore ---
+```
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+```
+
+--- FILE: frontend/package-lock.json ---
+```
 {
   "name": "frontend",
   "version": "0.0.0",
@@ -2957,3 +3117,1070 @@
     }
   }
 }
+
+```
+
+--- FILE: frontend/package.json ---
+```
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router": "^7.13.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.3.1"
+  }
+}
+
+```
+
+--- FILE: frontend/eslint.config.js ---
+```
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+
+```
+
+--- FILE: frontend/src/BookForm.jsx ---
+```
+import { useState } from 'react';
+
+function BookForm({ onBookAdded }) {
+    // 1. Define state for each input field
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [price, setPrice] = useState(0);
+    const [copies, setCopies] = useState(1);
+
+    // 2. The Submit Handler
+    const handleSubmit = (e) => {
+        e.preventDefault(); // Stop the page from reloading!
+
+        const newBook = { title, author, price, copies };
+
+        // 3. POST to Spring Boot
+        fetch('/api/books', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newBook),
+        })
+            .then(response => response.json())
+            .then(savedBook => {
+                alert("Book Saved!");
+                onBookAdded(savedBook); // Tell the parent to update the list
+                // 4. Clear the form
+                setTitle('');
+                setAuthor('');
+                setPrice(0);
+            });
+    };
+
+    return (
+        <form onSubmit={handleSubmit} style={{ border: '2px solid blue', padding: '20px', marginBottom: '20px' }}>
+            <h3>Add New Book</h3>
+            <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            <input type="text" placeholder="Author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+            <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
+            <button type="submit">Save to Database</button>
+        </form>
+    );
+}
+
+export default BookForm;
+```
+
+--- FILE: frontend/src/App.css ---
+```
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+```
+
+--- FILE: frontend/src/index.css ---
+```
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+```
+
+--- FILE: frontend/src/Book.jsx ---
+```
+import { useState } from 'react';
+
+function Book({ id, title, author, price, onDelete, onUpdate }) {
+    // 1. Local state for "Edit Mode"
+    const [isEditing, setIsEditing] = useState(false);
+    const [tempTitle, setTempTitle] = useState(title);
+    const [tempAuthor, setTempAuthor] = useState(author);
+    const [tempPrice, setTempPrice] = useState(price);
+
+    // 2. Handle Save
+    const handleSave = () => {
+        const updatedBook = {
+            id,
+            title: tempTitle,
+            author: tempAuthor,
+            price: parseFloat(tempPrice),
+            copies: 1 // For now, keep copies static or add an input for it
+        };
+
+        onUpdate(id, updatedBook); // Call the parent function
+        setIsEditing(false);       // Exit edit mode
+    };
+
+    // 3. Conditional Rendering: EDIT MODE
+    if (isEditing) {
+        return (
+            <div className="book-row editing" style={{ border: '2px solid #4444ff', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', gap: '10px', backgroundColor: '#eef' }}>
+                <input type="text" value={tempTitle} onChange={(e) => setTempTitle(e.target.value)} style={{ flex: 2 }} />
+                <input type="text" value={tempAuthor} onChange={(e) => setTempAuthor(e.target.value)} style={{ flex: 1 }} />
+                <input type="number" value={tempPrice} onChange={(e) => setTempPrice(e.target.value)} style={{ width: '80px' }} />
+
+                <button onClick={handleSave} style={{ backgroundColor: '#28a745', color: 'white' }}>Save</button>
+                <button onClick={() => setIsEditing(false)} style={{ backgroundColor: '#6c757d', color: 'white' }}>Cancel</button>
+            </div>
+        );
+    }
+
+    // 4. Conditional Rendering: VIEW MODE
+    return (
+        <div className="book-row" style={{ border: '1px solid #ccc', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9f9f9' }}>
+            <div className="book-info" style={{ textAlign: 'left' }}>
+                <h3 style={{ margin: '0 0 5px 0' }}>{title}</h3>
+                <p style={{ margin: '0' }}>
+                    <strong>Author:</strong> {author} | <strong>Price:</strong> ${price.toFixed(2)}
+                </p>
+            </div>
+
+            <div className="book-actions">
+                <button onClick={() => setIsEditing(true)} style={{ backgroundColor: '#ffc107', marginRight: '5px' }}>Edit</button>
+                <button onClick={() => onDelete(id)} style={{ backgroundColor: '#ff4444', color: 'white' }}>Delete</button>
+            </div>
+        </div>
+    );
+}
+
+export default Book;
+
+```
+
+--- FILE: frontend/src/main.jsx ---
+```
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router' // Import the Router
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+    <StrictMode>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </StrictMode>,
+)
+```
+
+--- FILE: frontend/src/App.jsx ---
+```
+import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router' // Import routing components
+import Navbar from './Navbar'
+import Home from './Home'
+import Book from './Book'
+import BookForm from './BookForm'
+import './App.css'
+
+function App() {
+    const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch data exactly as before
+    useEffect(() => {
+        fetch('/api/books')
+            .then(res => res.json())
+            .then(data => {
+                setBooks(data);
+                setLoading(false);
+            });
+    }, []);
+
+    const handleAddBook = (newBook) => {
+        setBooks([...books, newBook]);
+    };
+
+    const handleDeleteBook = (id) => {
+        if (!window.confirm("Delete this book?")) return;
+        fetch(`/api/books/${id}`, { method: 'DELETE' })
+            .then(res => {
+                if (res.ok) setBooks(books.filter(b => b.id !== id));
+            });
+    };
+
+    const handleUpdateBook = (id, updatedData) => {
+        fetch(`/api/books/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+        })
+            .then(res => res.json())
+            .then(savedBook => {
+                setBooks(books.map(b => (b.id === id ? savedBook : b)));
+            });
+    };
+
+    if (loading) return <h2>Loading...</h2>;
+
+    return (
+        <div className="app-container" style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
+            {/* The Navbar stays visible on EVERY page */}
+            <Navbar />
+
+            {/* The Routes decide which component to render in this spot */}
+            <Routes>
+                {/* 1. The Home Page */}
+                <Route path="/" element={<Home />} />
+
+                {/* 2. The Inventory Page (Our old main view) */}
+                <Route path="/inventory" element={
+                    <div className="book-list">
+                        <h1>Current Inventory</h1>
+                        {books.map((b) => (
+                            <Book key={b.id} {...b} onDelete={handleDeleteBook} onUpdate={handleUpdateBook} />
+                        ))}
+                    </div>
+                } />
+
+                {/* 3. The Add Book Page */}
+                <Route path="/add" element={
+                    <div>
+                        <h1>Add to Library</h1>
+                        <BookForm onBookAdded={handleAddBook} />
+                    </div>
+                } />
+            </Routes>
+        </div>
+    )
+}
+
+export default App
+```
+
+--- FILE: frontend/src/Navbar.jsx ---
+```
+import { Link } from 'react-router';
+
+function Navbar() {
+    return (
+        <nav style={{
+            padding: '1rem',
+            backgroundColor: '#222',
+            color: 'white',
+            marginBottom: '20px',
+            display: 'flex',
+            gap: '20px',
+            borderRadius: '8px'
+        }}>
+            <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>🏠 Home</Link>
+            <Link to="/inventory" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>📚 View Inventory</Link>
+            <Link to="/add" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>➕ Add New Book</Link>
+        </nav>
+    );
+}
+
+export default Navbar;
+```
+
+--- FILE: frontend/src/Home.jsx ---
+```
+function Home() {
+    return (
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+            <h1>Welcome to the Bookstore Admin</h1>
+            <p>Use the navigation bar above to manage your digital library.</p>
+            <div style={{ fontSize: '50px' }}>📖🚀</div>
+        </div>
+    );
+}
+
+export default Home;
+```
+
+--- FILE: pom.xml ---
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.0.2</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>csd230</groupId>
+    <artifactId>csd230-lecture-2_11_1-react-in-class-exercise</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>csd230-lecture-2.11.1-react-in-class-exercise</name>
+    <description>csd230-lecture-2.11.1-react-in-class-exercise</description>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+    <scm>
+        <connection/>
+        <developerConnection/>
+        <tag/>
+        <url/>
+    </scm>
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-h2console</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mock Data Generator -->
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.0</version>
+                <configuration>
+                    <workingDirectory>frontend</workingDirectory>
+                    <installDirectory>target</installDirectory>
+                </configuration>
+                <executions>
+                    <!-- 1. Install Node and NPM locally for the project -->
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v20.10.0</nodeVersion>
+                            <npmVersion>10.2.3</npmVersion>
+                        </configuration>
+                    </execution>
+
+                    <!-- 2. Run 'npm install' -->
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+
+                    <!-- 3. Run 'npm run build' -->
+                    <execution>
+                        <id>npm run build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+```
+
+--- FILE: .gitignore ---
+```
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+```
+
+--- FILE: .gitattributes ---
+```
+/mvnw text eol=lf
+*.cmd text eol=crlf
+
+```
+
+--- FILE: src/test/java/csd230/ApplicationTests.java ---
+```
+package csd230;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
+
+```
+
+--- FILE: src/main/resources/static/index.html ---
+```
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend</title>
+    <script type="module" crossorigin src="/assets/index-Bv_A5Far.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-COcDBgFa.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+```
+
+--- FILE: src/main/resources/static/vite.svg ---
+```
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+```
+
+--- FILE: src/main/resources/application.properties ---
+```
+spring.application.name=csd230-lecture-2.11.1-react-in-class-exercise
+
+# H2 Database Config
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=admin
+spring.datasource.password=admin
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+# Show SQL logs (helpful for debugging the tutorial)
+spring.jpa.show-sql=true
+# Ensure tables are created based on your Entity classes
+spring.jpa.hibernate.ddl-auto=update
+
+# Enable H2 Console (at http://localhost:8080/h2-console)
+spring.h2.console.enabled=true
+```
+
+--- FILE: src/main/java/csd230/Application.java ---
+```
+package csd230;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}
+
+```
+
+--- FILE: src/main/java/csd230/seeder/DataSeeder.java ---
+```
+package csd230.seeder;
+
+import csd230.entities.*;
+import csd230.repositories.BookRepository;
+import csd230.repositories.MagazineRepository;
+import net.datafaker.Faker;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.concurrent.TimeUnit;
+
+@Component
+public class DataSeeder implements CommandLineRunner {
+
+    private final BookRepository bookRepository;
+    private final MagazineRepository magazineRepository;
+    private final Faker faker;
+
+    public DataSeeder(BookRepository bookRepository, MagazineRepository magazineRepository) {
+        this.bookRepository = bookRepository;
+        this.magazineRepository = magazineRepository;
+        this.faker = new Faker();
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Only seed if the database is empty
+        if (bookRepository.count() == 0) {
+            seedBooks();
+            seedMagazines();
+        }
+    }
+
+    private void seedBooks() {
+        System.out.println("Seeding Books...");
+        for (int i = 0; i < 10; i++) {
+            BookEntity book = new BookEntity(
+                    faker.book().title(),                // Title
+                    faker.number().randomDouble(2, 10, 100), // Price
+                    faker.number().numberBetween(1, 50), // Copies
+                    faker.book().author()                // Author
+            );
+            bookRepository.save(book);
+        }
+    }
+
+    private void seedMagazines() {
+        System.out.println("Seeding Magazines...");
+        for (int i = 0; i < 5; i++) {
+            // Convert Faker Date to LocalDateTime
+            LocalDateTime issueDate = faker.date().past(365, TimeUnit.DAYS)
+                    .toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            MagazineEntity mag = new MagazineEntity(
+                    faker.book().publisher() + " Weekly", // Using publisher as magazine title
+                    faker.number().randomDouble(2, 5, 20),
+                    faker.number().numberBetween(10, 100),
+                    faker.number().numberBetween(100, 500), // Order Qty
+                    issueDate
+            );
+            magazineRepository.save(mag);
+        }
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/repositories/MagazineRepository.java ---
+```
+package csd230.repositories;
+
+import csd230.entities.MagazineEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface MagazineRepository extends JpaRepository<MagazineEntity, Long> {
+}
+
+```
+
+--- FILE: src/main/java/csd230/repositories/BookRepository.java ---
+```
+package csd230.repositories;
+
+import csd230.entities.BookEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface BookRepository extends JpaRepository<BookEntity, Long> {
+}
+
+
+```
+
+--- FILE: src/main/java/csd230/controllers/MagazineController.java ---
+```
+package csd230.controllers;
+
+import csd230.entities.BookEntity;
+import csd230.repositories.BookRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/magazines")
+@CrossOrigin(origins = "http://localhost:5173") // Allow Vite React App
+public class MagazineController {
+
+    private final BookRepository magazineRepository;
+
+    public MagazineController(BookRepository magazineRepository) {
+        this.magazineRepository = magazineRepository;
+    }
+
+    // GET all magazines
+    @GetMapping
+    public List<BookEntity> getAllBooks() {
+        return magazineRepository.findAll();
+    }
+
+    // GET single magazine
+    @GetMapping("/{id}")
+    public ResponseEntity<BookEntity> getBookById(@PathVariable Long id) {
+        return magazineRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // POST create magazine
+    @PostMapping
+    public BookEntity createBook(@RequestBody BookEntity magazine) {
+        return magazineRepository.save(magazine);
+    }
+
+    // PUT update magazine
+    @PutMapping("/{id}")
+    public ResponseEntity<BookEntity> updateBook(@PathVariable Long id, @RequestBody BookEntity magazineDetails) {
+        return magazineRepository.findById(id).map(magazine -> {
+            magazine.setTitle(magazineDetails.getTitle());
+            magazine.setAuthor(magazineDetails.getAuthor());
+            magazine.setPrice(magazineDetails.getPrice());
+            magazine.setCopies(magazineDetails.getCopies());
+            return ResponseEntity.ok(magazineRepository.save(magazine));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // DELETE magazine
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        if (magazineRepository.existsById(id)) {
+            magazineRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/controllers/BookController.java ---
+```
+package csd230.controllers;
+
+import csd230.entities.BookEntity;
+import csd230.repositories.BookRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+        import java.util.List;
+
+@RestController
+@RequestMapping("/api/books")
+@CrossOrigin(origins = "http://localhost:5173") // Allow Vite React App
+public class BookController {
+
+    private final BookRepository bookRepository;
+
+    public BookController(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    // GET all books
+    @GetMapping
+    public List<BookEntity> getAllBooks() {
+        return bookRepository.findAll();
+    }
+
+    // GET single book
+    @GetMapping("/{id}")
+    public ResponseEntity<BookEntity> getBookById(@PathVariable Long id) {
+        return bookRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // POST create book
+    @PostMapping
+    public BookEntity createBook(@RequestBody BookEntity book) {
+        return bookRepository.save(book);
+    }
+
+    // PUT update book
+    @PutMapping("/{id}")
+    public ResponseEntity<BookEntity> updateBook(@PathVariable Long id, @RequestBody BookEntity bookDetails) {
+        return bookRepository.findById(id).map(book -> {
+            book.setTitle(bookDetails.getTitle());
+            book.setAuthor(bookDetails.getAuthor());
+            book.setPrice(bookDetails.getPrice());
+            book.setCopies(bookDetails.getCopies());
+            return ResponseEntity.ok(bookRepository.save(book));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // DELETE book
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/entities/ProductEntity.java ---
+```
+package csd230.entities;
+
+import jakarta.persistence.*;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "products")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "product_type", discriminatorType = DiscriminatorType.STRING)
+public abstract class ProductEntity implements Serializable, SaleableItem {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    // --- ADD THIS METHOD ---
+    // This allows Thymeleaf to access "${product.productType}" safely
+    public String getProductType() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "id=" + id +
+                "} : "+super.toString();
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/entities/PublicationEntity.java ---
+```
+package csd230.entities;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+
+@Entity
+public abstract class PublicationEntity extends ProductEntity {
+    private String title;
+    @Column(name = "pub_price") private double price;
+    private int copies;
+    public PublicationEntity() {}
+    public PublicationEntity(String t, double p, int c) { this.title = t; this.price = p; this.copies = c; }
+
+    @Override public void sellItem() {
+        if (copies > 0) { copies--; System.out.println("Sold '" + title + "'. Remaining copies: " + copies); }
+        else { System.out.println("Cannot sell '" + title + "'. Out of stock."); }
+    }
+    @Override public double getPrice() { return price; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String t) { this.title = t; }
+    public void setPrice(double p) { this.price = p; }
+    public int getCopies() { return copies; }
+    public void setCopies(int c) { this.copies = c; }
+    @Override public String toString() { return "Pub{title='" + title + "', price=" + price + ", copies=" + copies + "}"; }
+}
+
+```
+
+--- FILE: src/main/java/csd230/entities/BookEntity.java ---
+```
+package csd230.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("BOOK")
+public class BookEntity extends PublicationEntity {
+    private String author;
+
+    public BookEntity() {}
+
+    // Force Jackson to use the empty constructor + setters
+    @JsonIgnore
+    public BookEntity(String t, double p, int c, String a) {
+        super(t, p, c);
+        this.author = a;
+    }
+
+    public String getAuthor() { return author; }
+    public void setAuthor(String a) { this.author = a; }
+
+    @Override
+    public String toString() {
+        return "Book{author='" + author + "', " + super.toString() + "}";
+    }
+}
+
+
+```
+
+--- FILE: src/main/java/csd230/entities/MagazineEntity.java ---
+```
+package csd230.entities;
+
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+import java.time.LocalDateTime;
+
+@Entity @DiscriminatorValue("MAGAZINE")
+public class MagazineEntity extends PublicationEntity {
+    private int orderQty;
+    private LocalDateTime currentIssue;
+    public MagazineEntity() {}
+    public MagazineEntity(String t, double p, int c, int o, LocalDateTime d) { super(t, p, c); this.orderQty = o; this.currentIssue = d; }
+    public int getOrderQty() { return orderQty; }
+    public void setOrderQty(int o) { this.orderQty = o; }
+    public void setCurrentIssue(LocalDateTime d) { this.currentIssue = d; }
+    public LocalDateTime getCurrentIssue() { return currentIssue; }
+    @Override public String toString() { return "Mag{issue=" + currentIssue + ", " + super.toString() + "}"; }
+}
+
+```
+
+--- FILE: src/main/java/csd230/entities/SaleableItem.java ---
+```
+package csd230.entities;
+
+public interface SaleableItem {
+    void sellItem();
+    double getPrice();
+}
+
+```
+
