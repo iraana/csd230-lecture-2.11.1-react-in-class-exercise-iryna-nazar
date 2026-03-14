@@ -1,54 +1,45 @@
 import { useState } from 'react';
 
-function Book({ id, title, author, price, onDelete, onUpdate }) {
-    // 1. Local state for "Edit Mode"
+function Book({ id, title, author, price, onUpdate, onDelete }) {
     const [isEditing, setIsEditing] = useState(false);
-    const [tempTitle, setTempTitle] = useState(title);
-    const [tempAuthor, setTempAuthor] = useState(author);
-    const [tempPrice, setTempPrice] = useState(price);
+    const [tTitle, setTTitle] = useState(title);
+    const [tAuthor, setTAuthor] = useState(author);
+    const [tPrice, setTPrice] = useState(price);
 
-    // 2. Handle Save
-    const handleSave = () => {
-        const updatedBook = {
+    const save = () => {
+        onUpdate(id, {
             id,
-            title: tempTitle,
-            author: tempAuthor,
-            price: parseFloat(tempPrice),
-            copies: 1 // For now, keep copies static or add an input for it
-        };
-
-        onUpdate(id, updatedBook); // Call the parent function
-        setIsEditing(false);       // Exit edit mode
+            productType: "BookEntity", // Key for backend
+            title: tTitle,
+            author: tAuthor,
+            price: parseFloat(tPrice) || 0.0,
+            copies: 1
+        });
+        setIsEditing(false);
     };
 
-    // 3. Conditional Rendering: EDIT MODE
-    if (isEditing) {
-        return (
-            <div className="book-row editing" style={{ border: '2px solid #4444ff', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', gap: '10px', backgroundColor: '#eef' }}>
-                <input type="text" value={tempTitle} onChange={(e) => setTempTitle(e.target.value)} style={{ flex: 2 }} />
-                <input type="text" value={tempAuthor} onChange={(e) => setTempAuthor(e.target.value)} style={{ flex: 1 }} />
-                <input type="number" value={tempPrice} onChange={(e) => setTempPrice(e.target.value)} style={{ width: '80px' }} />
-
-                <button onClick={handleSave} style={{ backgroundColor: '#28a745', color: 'white' }}>Save</button>
-                <button onClick={() => setIsEditing(false)} style={{ backgroundColor: '#6c757d', color: 'white' }}>Cancel</button>
-            </div>
-        );
-    }
-
-    // 4. Conditional Rendering: VIEW MODE
     return (
-        <div className="book-row" style={{ border: '1px solid #ccc', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9f9f9' }}>
-            <div className="book-info" style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: '0 0 5px 0' }}>{title}</h3>
-                <p style={{ margin: '0' }}>
-                    <strong>Author:</strong> {author} | <strong>Price:</strong> ${price.toFixed(2)}
-                </p>
-            </div>
-
-            <div className="book-actions">
-                <button onClick={() => setIsEditing(true)} style={{ backgroundColor: '#ffc107', marginRight: '5px' }}>Edit</button>
-                <button onClick={() => onDelete(id)} style={{ backgroundColor: '#ff4444', color: 'white' }}>Delete</button>
-            </div>
+        <div className="admin-card">
+            {isEditing ? (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input style={{flex: 2}} value={tTitle} onChange={e => setTTitle(e.target.value)} />
+                    <input style={{flex: 1}} value={tAuthor} onChange={e => setTAuthor(e.target.value)} />
+                    <input type="number" style={{width: '80px'}} value={tPrice} onChange={e => setTPrice(e.target.value)} />
+                    <button style={{background:'#10b981', color:'white'}} onClick={save}>Save</button>
+                    <button style={{background:'#64748b', color:'white'}} onClick={() => setIsEditing(false)}>X</button>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{textAlign: 'left'}}>
+                        <h3 style={{margin:0, color: '#f1f5f9'}}>📚 {title}</h3>
+                        <p style={{margin:'5px 0 0 0', color: '#94a3b8'}}>Author: {author} | Price: ${price?.toFixed(2)}</p>
+                    </div>
+                    <div style={{display:'flex', gap: '8px'}}>
+                        <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}}  onClick={() => setIsEditing(true)}>Edit</button>
+                        <button style={{background:'#ef4444', color:'white'}} onClick={() => fetch(`/api/books/${id}`, {method:'DELETE'}).then(onDelete)}>Delete</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

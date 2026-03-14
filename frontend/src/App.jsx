@@ -1,97 +1,68 @@
-import { useState, useEffect } from 'react'
-import { Routes, Route } from 'react-router'
-import Navbar from './Navbar'
-import Home from './Home'
-import Book from './Book'
-import BookForm from './BookForm'
-import Magazine from './Magazine'        // NEW
-import MagazineForm from './MagazineForm' // NEW
-import './App.css'
+import { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router';
+import Navbar from './Navbar';
+import Home from './Home';
+import Book from './Book';
+import BookForm from './BookForm';
+import Magazine from './Magazine';
+import MagazineForm from './MagazineForm';
+import Laptop from './Laptop';
+import LaptopForm from './LaptopForm';
 
 function App() {
     const [books, setBooks] = useState([]);
-    const [magazines, setMagazines] = useState([]); // NEW
+    const [magazines, setMagazines] = useState([]);
+    const [laptops, setLaptops] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        // Fetch both Books and Magazines
-        const bookFetch = fetch('/api/books').then(res => res.json());
-        const magFetch = fetch('/api/magazines').then(res => res.json());
-
-        Promise.all([bookFetch, magFetch]).then(([bookData, magData]) => {
-            setBooks(bookData);
-            setMagazines(magData);
+    const refreshData = async () => {
+        try {
+            const [b, m, l] = await Promise.all([
+                fetch('/api/books').then(r => r.json()),
+                fetch('/api/magazines').then(r => r.json()),
+                fetch('/api/laptops').then(r => r.json())
+            ]);
+            setBooks(b); setMagazines(m); setLaptops(l);
             setLoading(false);
-        });
-    }, []);
-
-    // --- Book Handlers ---
-    const handleAddBook = (newBook) => setBooks([...books, newBook]);
-    const handleDeleteBook = (id) => {
-        if (window.confirm("Delete this book?")) {
-            fetch(`/api/books/${id}`, { method: 'DELETE' }).then(res => {
-                if (res.ok) setBooks(books.filter(b => b.id !== id));
-            });
-        }
+        } catch (e) { console.error("Database offline"); }
     };
-    const handleUpdateBook = (id, updatedData) => {
-        fetch(`/api/books/${id}`, {
+
+    useEffect(() => { refreshData(); }, []);
+
+    // Master Update Handler
+    const handleUpdate = (id, data, path, setter) => {
+        fetch(`/api/${path}/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData)
-        }).then(res => res.json()).then(saved => setBooks(books.map(b => b.id === id ? saved : b)));
+            body: JSON.stringify(data)
+        }).then(res => {
+            if (!res.ok) throw new Error("Sync Error");
+            return res.json();
+        }).then(saved => {
+            setter(prev => prev.map(item => item.id === id ? saved : item));
+        }).catch(err => alert(err.message));
     };
 
-    // --- Magazine Handlers (NEW) ---
-    const handleAddMag = (newMag) => setMagazines([...magazines, newMag]);
-    const handleDeleteMag = (id) => {
-        if (window.confirm("Delete this magazine?")) {
-            fetch(`/api/magazines/${id}`, { method: 'DELETE' }).then(res => {
-                if (res.ok) setMagazines(magazines.filter(m => m.id !== id));
-            });
-        }
-    };
-    const handleUpdateMag = (id, updatedData) => {
-        fetch(`/api/magazines/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData)
-        }).then(res => res.json()).then(saved => setMagazines(magazines.map(m => m.id === id ? saved : m)));
-    };
-
-    if (loading) return <h2>Loading...</h2>;
+    if (loading) return <h2 style={{textAlign:'center', marginTop:'20%'}}>Connecting to Admin Services...</h2>;
 
     return (
-        <div className="app-container" style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
             <Navbar />
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home bookCount={books.length} magCount={magazines.length} lapCount={laptops.length} />} />
 
-                {/* Book Routes */}
-                <Route path="/inventory" element={
-                    <div className="book-list">
-                        <h1>Book Inventory</h1>
-                        {books.map(b => <Book key={b.id} {...b} onDelete={handleDeleteBook} onUpdate={handleUpdateBook} />)}
-                    </div>
-                } />
-                <Route path="/add" element={<div><h1>Add Book</h1><BookForm onBookAdded={handleAddBook} /></div>} />
+                <Route path="/inventory" element={<div><h1>Book Inventory</h1>{books.map(i => <Book key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'books', setBooks)} onDelete={refreshData}/>)}</div>} />
+                <Route path="/add" element={<BookForm onAdded={(n) => { setBooks([...books, n]); navigate('/inventory'); }} />} />
 
-                {/* Magazine Routes (NEW) */}
-                <Route path="/magazines" element={
-                    <div className="mag-list">
-                        <h1>Magazine Inventory</h1>
-                        {magazines.map(m => <Magazine key={m.id} {...m} onDelete={handleDeleteMag} onUpdate={handleUpdateMag} />)}
-                    </div>
-                } />
-                <Route path="/add-magazine" element={
-                    <div>
-                        <h1>Add Magazine</h1>
-                        <MagazineForm onMagAdded={handleAddMag} />
-                    </div>
-                } />
+                <Route path="/magazines" element={<div><h1>Magazine Inventory</h1>{magazines.map(i => <Magazine key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'magazines', setMagazines)} onDelete={refreshData}/>)}</div>} />
+                <Route path="/add-magazine" element={<MagazineForm onAdded={(n) => { setMagazines([...magazines, n]); navigate('/magazines'); }} />} />
+
+                <Route path="/laptops" element={<div><h1>Laptop Inventory</h1>{laptops.map(i => <Laptop key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'laptops', setLaptops)} onDelete={refreshData}/>)}</div>} />
+                <Route path="/add-laptop" element={<LaptopForm onAdded={(n) => { setLaptops([...laptops, n]); navigate('/laptops'); }} />} />
             </Routes>
         </div>
-    )
+    );
 }
 
 export default App;

@@ -1,19 +1,21 @@
 import { useState } from 'react';
 
-function MagazineForm({ onMagAdded }) {
+function MagazineForm({ onAdded }) {
     const [title, setTitle] = useState('');
-    const [price, setPrice] = useState(0);
-    const [orderQty, setOrderQty] = useState(0);
+    const [price, setPrice] = useState('');
+    const [qty, setQty] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // Build the object for a Polymorphic backend
         const newMag = {
-            title,
-            price: parseFloat(price),
-            orderQty: parseInt(orderQty),
+            productType: "MagazineEntity", // Mandatory for our Java setup
+            title: title,
+            price: parseFloat(price) || 0.0,
+            orderQty: parseInt(qty) || 0,
             copies: 10, // Default seed value
-            currentIssue: new Date().toISOString() // Setting current date for new entry
+            currentIssue: new Date().toISOString().split('.')[0]
         };
 
         fetch('/api/magazines', {
@@ -21,23 +23,29 @@ function MagazineForm({ onMagAdded }) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newMag),
         })
-            .then(response => response.json())
-            .then(savedMag => {
-                alert("Magazine Saved!");
-                onMagAdded(savedMag);
-                setTitle('');
-                setPrice(0);
-                setOrderQty(0);
-            });
+            .then(res => res.json())
+            .then(saved => {
+                alert("Magazine Registered!");
+                onAdded(saved);
+            })
+            .catch(err => console.error("Post error:", err));
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ border: '2px solid blue', padding: '20px', marginBottom: '20px' }}>
-            <h3>Add New Magazine</h3>
-            <input type="text" placeholder="Magazine Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            <input type="number" step="0.01" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-            <input type="number" placeholder="Order Quantity" value={orderQty} onChange={(e) => setOrderQty(e.target.value)} required />
-            <button type="submit">Save Magazine</button>
+        <form onSubmit={handleSubmit} className="admin-card" style={{ borderLeft: '10px solid #10b981' }}>
+            <h2 style={{ color: '#10b981', marginTop: 0 }}>Add New Magazine</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <input placeholder="Magazine Title (e.g. National Geographic)" value={title} onChange={e => setTitle(e.target.value)} required />
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input type="number" step="0.01" placeholder="Price" value={price} onChange={e => setPrice(e.target.value)} required style={{ flex: 1 }} />
+                    <input type="number" placeholder="Initial Order Qty" value={qty} onChange={e => setQty(e.target.value)} required style={{ flex: 1 }} />
+                </div>
+
+                <button type="submit" style={{ backgroundColor: '#10b981', color: 'white', fontSize: '1rem' }}>
+                    Add to Inventory
+                </button>
+            </div>
         </form>
     );
 }

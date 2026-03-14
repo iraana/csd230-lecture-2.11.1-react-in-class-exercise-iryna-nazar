@@ -1,42 +1,76 @@
 import { useState } from 'react';
 
-function BookForm({ onBookAdded }) {
-    // 1. Define state for each input field
+function BookForm({ onAdded }) {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
-    const [price, setPrice] = useState(0);
-    const [copies, setCopies] = useState(1);
+    const [price, setPrice] = useState('');
 
-    // 2. The Submit Handler
     const handleSubmit = (e) => {
-        e.preventDefault(); // Stop the page from reloading!
+        e.preventDefault();
 
-        const newBook = { title, author, price, copies };
+        const newBook = {
+            productType: "BookEntity",
+            title: title,
+            author: author,
+            price: parseFloat(price) || 0.0,
+            copies: 10
+        };
 
-        // 3. POST to Spring Boot
         fetch('/api/books', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newBook),
         })
-            .then(response => response.json())
-            .then(savedBook => {
-                alert("Book Saved!");
-                onBookAdded(savedBook); // Tell the parent to update the list
-                // 4. Clear the form
+            .then(res => res.json())
+            .then(saved => {
+                alert("Book added to library successfully!");
+                onAdded(saved);
+
                 setTitle('');
                 setAuthor('');
-                setPrice(0);
-            });
+                setPrice('');
+            })
+            .catch(err => console.error("Database error:", err));
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ border: '2px solid blue', padding: '20px', marginBottom: '20px' }}>
-            <h3>Add New Book</h3>
-            <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            <input type="text" placeholder="Author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
-            <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-            <button type="submit">Save to Database</button>
+        <form onSubmit={handleSubmit} className="admin-card" style={{ borderLeft: '10px solid #6366f1' }}>
+            <h2 style={{ color: '#6366f1', marginTop: 0 }}>Add New Book</h2>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {/* Title Input */}
+                <input
+                    placeholder="Book Title"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    required
+                />
+
+                {/* Author and Price Row */}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input
+                        placeholder="Author Name"
+                        value={author}
+                        onChange={e => setAuthor(e.target.value)}
+                        required
+                        style={{ flex: 2 }}
+                    />
+                    <input
+                        type="number"
+                        step="0.01"
+                        placeholder="Price"
+                        value={price}
+                        onChange={e => setPrice(e.target.value)}
+                        required
+                        style={{ flex: 1 }}
+                    />
+                </div>
+
+                {/* Submit Button */}
+                <button type="submit" style={{ backgroundColor: '#6366f1', color: 'white', fontSize: '1rem' }}>
+                    Add to Inventory
+                </button>
+            </div>
         </form>
     );
 }
