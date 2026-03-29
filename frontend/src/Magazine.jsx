@@ -1,21 +1,25 @@
 import { useState } from 'react';
+import { useAuth } from './provider/authProvider'; // 1. Import Auth Context
+import api from './api/axiosConfig'; // 2. Import custom Axios api
 
 function Magazine({ id, title, price, orderQty, currentIssue, onUpdate, onDelete }) {
-    const [isEditing, setIsEditing] = useState(false);
+    const { isAdmin } = useAuth(); // 3. Get admin status
+    const[isEditing, setIsEditing] = useState(false);
     const [tTitle, setTTitle] = useState(title);
     const [tPrice, setTPrice] = useState(price);
 
     const save = () => {
-        // CLEAN DATE: Strip 'Z' so Java LocalDateTime works
-        const cleanDate = currentIssue.split('.')[0].replace('Z', '');
+        let dateStr = currentIssue;
+        if (dateStr.includes('.')) dateStr = dateStr.split('.')[0];
+        if (dateStr.includes('Z')) dateStr = dateStr.replace('Z', '');
+
         onUpdate(id, {
             id,
-            productType: "MagazineEntity",
             title: tTitle,
             price: parseFloat(tPrice) || 0.0,
-            orderQty,
-            copies: 1,
-            currentIssue: cleanDate
+            orderQty: orderQty,
+            copies: 10, // Added default copies
+            currentIssue: dateStr
         });
         setIsEditing(false);
     };
@@ -35,9 +39,22 @@ function Magazine({ id, title, price, orderQty, currentIssue, onUpdate, onDelete
                         <h3 style={{margin:0, color: '#f1f5f9'}}>📰 {title}</h3>
                         <p style={{margin:'5px 0 0 0', opacity: 0.7, color: '#94a3b8'}}>Price: ${price?.toFixed(2)} | Qty: {orderQty}</p>
                     </div>
-                    <div>
-                        <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
-                        <button style={{background:'#ef4444', color:'white'}} onClick={() => fetch(`/api/magazines/${id}`, {method:'DELETE'}).then(onDelete)}>Delete</button>
+                    <div style={{display:'flex', gap: '8px'}}>
+                        {/* ADD TO CART - Visible to all */}
+                        <button
+                            style={{background:'#6366f1', color:'white'}}
+                            onClick={() => api.post(`/cart/add/${id}`).then(() => alert("Added to cart!"))}
+                        >
+                            🛒 Add to Cart
+                        </button>
+                        {/* 4. PROTECT BUTTONS WITH isAdmin */}
+                        {isAdmin && (
+                            <>
+                                <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
+                                {/* 5. Use api.delete instead of fetch */}
+                                <button style={{background:'#ef4444', color:'white'}} onClick={() => api.delete(`/magazines/${id}`).then(onDelete)}>Delete</button>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import api from './api/axiosConfig';
 
 function MagazineForm({ onAdded }) {
     const [title, setTitle] = useState('');
@@ -18,15 +19,10 @@ function MagazineForm({ onAdded }) {
             currentIssue: new Date().toISOString().split('.')[0]
         };
 
-        fetch('/api/magazines', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newMag),
-        })
-            .then(res => res.json())
-            .then(saved => {
+        api.post('/magazines', newMag)
+            .then(res => {
                 alert("Magazine Registered!");
-                onAdded(saved);
+                onAdded(res.data);
             })
             .catch(err => console.error("Post error:", err));
     };

@@ -1,19 +1,21 @@
 import { useState } from 'react';
+import { useAuth } from './provider/authProvider';
+import api from './api/axiosConfig';
 
 function Book({ id, title, author, price, onUpdate, onDelete }) {
+    const { isAdmin } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [tTitle, setTTitle] = useState(title);
-    const [tAuthor, setTAuthor] = useState(author);
+    const[tAuthor, setTAuthor] = useState(author);
     const [tPrice, setTPrice] = useState(price);
 
     const save = () => {
         onUpdate(id, {
             id,
-            productType: "BookEntity", // Key for backend
             title: tTitle,
             author: tAuthor,
             price: parseFloat(tPrice) || 0.0,
-            copies: 1
+            copies: 10
         });
         setIsEditing(false);
     };
@@ -35,8 +37,21 @@ function Book({ id, title, author, price, onUpdate, onDelete }) {
                         <p style={{margin:'5px 0 0 0', color: '#94a3b8'}}>Author: {author} | Price: ${price?.toFixed(2)}</p>
                     </div>
                     <div style={{display:'flex', gap: '8px'}}>
-                        <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}}  onClick={() => setIsEditing(true)}>Edit</button>
-                        <button style={{background:'#ef4444', color:'white'}} onClick={() => fetch(`/api/books/${id}`, {method:'DELETE'}).then(onDelete)}>Delete</button>
+                        {/* ADD TO CART - Visible to all */}
+                        <button
+                            style={{background:'#6366f1', color:'white'}}
+                            onClick={() => api.post(`/cart/add/${id}`).then(() => alert("Added to cart!"))}
+                        >
+                            🛒 Add to Cart
+                        </button>
+                        {/* 4. PROTECT BUTTONS WITH isAdmin */}
+                        {isAdmin && (
+                            <>
+                                <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
+
+                                <button style={{background:'#ef4444', color:'white'}} onClick={() => api.delete(`/books/${id}`).then(onDelete)}>Delete</button>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

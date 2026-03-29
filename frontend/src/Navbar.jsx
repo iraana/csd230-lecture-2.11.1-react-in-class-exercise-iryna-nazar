@@ -1,74 +1,90 @@
 import { Link } from 'react-router';
+import { useAuth } from './provider/authProvider';
 
 function Navbar() {
-    return (
-        <nav style={{
-            padding: '1rem 2rem',
-            backgroundColor: '#1e293b',
-            borderBottom: '1px solid #334155',
-            borderRadius: '12px',
-            marginBottom: '40px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
-        }}>
-            {/* Logo / Home */}
-            <Link to="/" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: '800', fontSize: '1.2rem' }}>
-                🚀 ADMIN CENTER
-            </Link>
+    const { isAdmin, token } = useAuth();
 
-            {/* Navigation Groups */}
+    if (!token) return null; // Don't show navbar if not logged in
+
+    return (
+        <nav style={navStyle}>
+            <Link to="/" style={logoStyle}>🚀 DASHBOARD</Link>
+
             <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
 
-                {/* Books Group */}
-                <div style={navGroupStyle}>
+                {/* BOOKS GROUP */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Link to="/inventory" style={linkStyle}>BOOKS</Link>
-                    <Link to="/add" style={{...addBtnStyle, backgroundColor: '#6366f1'}}>+ ADD</Link>
+                    {isAdmin && (
+                        <Link to="/add" style={{ ...baseAddStyle, backgroundColor: '#6366f1' }}>
+                            + Add
+                        </Link>
+                    )}
                 </div>
 
-                {/* Magazines Group */}
-                <div style={navGroupStyle}>
+                {/* MAGAZINES GROUP */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Link to="/magazines" style={linkStyle}>MAGAZINES</Link>
-                    <Link to="/add-magazine" style={{...addBtnStyle, backgroundColor: '#10b981'}}>+ ADD</Link>
+                    {isAdmin && (
+                        <Link to="/add-magazine" style={{ ...baseAddStyle, backgroundColor: '#10b981' }}>
+                            + Add
+                        </Link>
+                    )}
                 </div>
 
-                {/* Laptops Group */}
-                <div style={navGroupStyle}>
+                {/* LAPTOPS GROUP */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Link to="/laptops" style={linkStyle}>LAPTOPS</Link>
-                    <Link to="/add-laptop" style={{...addBtnStyle, backgroundColor: '#f43f5e'}}>+ ADD</Link>
+                    {isAdmin && (
+                        <Link to="/add-laptop" style={{ ...baseAddStyle, backgroundColor: '#f43f5e' }}>
+                            + Add
+                        </Link>
+                    )}
                 </div>
+
+                <Link to="/cart" style={{ ...linkStyle, color: '#f59e0b' }}>🛒 CART</Link>
 
             </div>
+
+            <Link to="/logout" style={{ color: '#ef4444', textDecoration: 'none', fontWeight:'bold' }}>Logout</Link>
         </nav>
     );
 }
 
-// Styling Constants
-const navGroupStyle = {
+// --- STYLES ---
+
+const navStyle = {
+    padding: '1rem 2rem',
+    backgroundColor: '#1e293b',
+    borderRadius: '12px',
+    marginBottom: '40px',
     display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    borderLeft: '1px solid #334155',
-    paddingLeft: '20px'
+    justifyContent: 'space-between',
+    alignItems: 'center'
+};
+
+const logoStyle = {
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: '800'
 };
 
 const linkStyle = {
     color: '#94a3b8',
     textDecoration: 'none',
-    fontWeight: '700',
-    fontSize: '0.85rem',
-    letterSpacing: '1px',
-    transition: 'color 0.2s'
+    fontSize: '0.9rem',
+    fontWeight: 'bold'
 };
 
-const addBtnStyle = {
+// Base style for the Add buttons to look like actual "buttons" instead of text links
+const baseAddStyle = {
     color: 'white',
-    padding: '5px 12px',
-    borderRadius: '6px',
     textDecoration: 'none',
     fontSize: '0.75rem',
-    fontWeight: '800'
+    fontWeight: 'bold',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    transition: 'filter 0.2s',
 };
 
 export default Navbar;

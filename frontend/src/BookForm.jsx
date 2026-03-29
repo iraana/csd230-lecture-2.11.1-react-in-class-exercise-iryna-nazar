@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import api from './api/axiosConfig';
 
 function BookForm({ onAdded }) {
     const [title, setTitle] = useState('');
@@ -16,19 +17,11 @@ function BookForm({ onAdded }) {
             copies: 10
         };
 
-        fetch('/api/books', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newBook),
-        })
-            .then(res => res.json())
-            .then(saved => {
+        api.post('/books', newBook)
+            .then(res => {
                 alert("Book added to library successfully!");
-                onAdded(saved);
-
-                setTitle('');
-                setAuthor('');
-                setPrice('');
+                onAdded(res.data);
+                setTitle(''); setAuthor(''); setPrice('');
             })
             .catch(err => console.error("Database error:", err));
     };

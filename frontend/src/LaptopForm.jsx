@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import api from './api/axiosConfig';
 
 function LaptopForm({ onAdded }) {
     const [brand, setBrand] = useState('');
@@ -15,15 +16,10 @@ function LaptopForm({ onAdded }) {
             ramSize: parseInt(ram) || 8
         };
 
-        fetch('/api/laptops', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newLaptop),
-        })
-            .then(res => res.json())
-            .then(saved => {
+        api.post('/laptops', newLaptop)
+            .then(res => {
                 alert("Electronics Catalog Updated!");
-                onAdded(saved); // Tells App.jsx to update state and redirect
+                onAdded(res.data);
             })
             .catch(err => console.error("Post error:", err));
     };
