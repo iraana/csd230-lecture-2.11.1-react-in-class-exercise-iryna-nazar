@@ -1,6 +1,6 @@
 CONTEXT FOR AI MODEL
 Generated from: /Users/iranazar/Desktop/26W/Advances Web App/lab5/csd230-lecture-2.11.1-react-in-class-exercise-iryna-nazar
-Timestamp: 2026-03-13-22-00
+Timestamp: 2026-04-03-20-20
 
 --- PROJECT STRUCTURE ---
 |-- csd230-lecture-2.11.1-react-in-class-exercise-iryna-nazar/
@@ -19,15 +19,24 @@ Timestamp: 2026-03-13-22-00
             |-- LaptopForm.jsx
             |-- Laptop.jsx
             |-- Magazine.jsx
+            |-- provider/
+                |-- authProvider.jsx
             |-- App.css
             |-- index.css
             |-- Book.jsx
             |-- main.jsx
             |-- App.jsx
             |-- Navbar.jsx
+            |-- Cart.jsx
+            |-- api/
+                |-- axiosConfig.js
             |-- MagazineForm.jsx
+            |-- pages/
+                |-- Login.jsx
+                |-- Logout.jsx
+            |-- routes/
+                |-- ProtectedRoute.jsx
             |-- Home.jsx
-    |-- pom.xml
     |-- .gitignore
     |-- .gitattributes
     |-- .files2ignore
@@ -38,6 +47,7 @@ Timestamp: 2026-03-13-22-00
                     |-- ApplicationTests.java
         |-- main/
             |-- resources/
+                |-- application-h2.properties
                 |-- static/
                     |-- index.html
                     |-- vite.svg
@@ -47,22 +57,62 @@ Timestamp: 2026-03-13-22-00
                     |-- Application.java
                     |-- seeder/
                         |-- DataSeeder.java
+                    |-- config/
+                        |-- WebSecurityConfig.java
+                    |-- auth/
+                        |-- JwtUtil.java
+                        |-- JwtAuthorizationFilter.java
                     |-- repositories/
                         |-- MagazineRepository.java
                         |-- LaptopRepository.java
+                        |-- BookEntityRepository.java
                         |-- BookRepository.java
+                        |-- ProductEntityRepository.java
+                        |-- UserEntityRepository.java
+                        |-- CartEntityRepository.java
+                        |-- MagazineEntityRepository.java
+                    |-- model/
+                        |-- response/
+                            |-- ErrorRes.java
+                            |-- LoginRes.java
+                        |-- request/
+                            |-- LoginReq.java
                     |-- controllers/
-                        |-- MagazineController.java
+                        |-- BookNotFoundException.java
+                        |-- BookNotFoundAdvice.java
+                        |-- CartRestController.java
+                        |-- CartController.java
+                        |-- SpaController.java
                         |-- LaptopController.java
-                        |-- BookController.java
+                        |-- AuthController.java
+                        |-- MagazineRestController.java
+                        |-- BookRestController.java
+                        |-- LoginController.java
+                    |-- pojos/
+                        |-- Product.java
+                        |-- Publication.java
+                        |-- Book.java
+                        |-- Ticket.java
+                        |-- Editable.java
+                        |-- DiscMag.java
+                        |-- Cart.java
+                        |-- SaleableItem.java
+                        |-- CashTill.java
+                        |-- Magazine.java
+                    |-- services/
+                        |-- CustomUserDetailsService.java
                     |-- entities/
                         |-- ProductEntity.java
                         |-- ElectronicDeviceEntity.java
                         |-- LaptopEntity.java
                         |-- PublicationEntity.java
+                        |-- CartEntity.java
+                        |-- UserEntity.java
                         |-- BookEntity.java
+                        |-- DiscMagEntity.java
                         |-- MagazineEntity.java
                         |-- SaleableItem.java
+                        |-- TicketEntity.java
 
 --------------------------------------------------
 
@@ -176,9 +226,11 @@ dist-ssr
       "name": "frontend",
       "version": "0.0.0",
       "dependencies": {
+        "axios": "^1.13.6",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
-        "react-router": "^7.13.1"
+        "react-router": "^7.13.2",
+        "react-router-dom": "^7.13.2"
       },
       "devDependencies": {
         "@eslint/js": "^9.39.1",
@@ -1695,6 +1747,23 @@ dist-ssr
       "dev": true,
       "license": "Python-2.0"
     },
+    "node_modules/asynckit": {
+      "version": "0.4.0",
+      "resolved": "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz",
+      "integrity": "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==",
+      "license": "MIT"
+    },
+    "node_modules/axios": {
+      "version": "1.13.6",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-1.13.6.tgz",
+      "integrity": "sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ==",
+      "license": "MIT",
+      "dependencies": {
+        "follow-redirects": "^1.15.11",
+        "form-data": "^4.0.5",
+        "proxy-from-env": "^1.1.0"
+      }
+    },
     "node_modules/balanced-match": {
       "version": "1.0.2",
       "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz",
@@ -1755,6 +1824,19 @@ dist-ssr
       },
       "engines": {
         "node": "^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7"
+      }
+    },
+    "node_modules/call-bind-apply-helpers": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/call-bind-apply-helpers/-/call-bind-apply-helpers-1.0.2.tgz",
+      "integrity": "sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==",
+      "license": "MIT",
+      "dependencies": {
+        "es-errors": "^1.3.0",
+        "function-bind": "^1.1.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
       }
     },
     "node_modules/callsites": {
@@ -1824,6 +1906,18 @@ dist-ssr
       "integrity": "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==",
       "dev": true,
       "license": "MIT"
+    },
+    "node_modules/combined-stream": {
+      "version": "1.0.8",
+      "resolved": "https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.8.tgz",
+      "integrity": "sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==",
+      "license": "MIT",
+      "dependencies": {
+        "delayed-stream": "~1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.8"
+      }
     },
     "node_modules/concat-map": {
       "version": "0.0.1",
@@ -1899,12 +1993,80 @@ dist-ssr
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/delayed-stream": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz",
+      "integrity": "sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.4.0"
+      }
+    },
+    "node_modules/dunder-proto": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/dunder-proto/-/dunder-proto-1.0.1.tgz",
+      "integrity": "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==",
+      "license": "MIT",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.1",
+        "es-errors": "^1.3.0",
+        "gopd": "^1.2.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
     "node_modules/electron-to-chromium": {
       "version": "1.5.286",
       "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.286.tgz",
       "integrity": "sha512-9tfDXhJ4RKFNerfjdCcZfufu49vg620741MNs26a9+bhLThdB+plgMeou98CAaHu/WATj2iHOOHTp1hWtABj2A==",
       "dev": true,
       "license": "ISC"
+    },
+    "node_modules/es-define-property": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/es-define-property/-/es-define-property-1.0.1.tgz",
+      "integrity": "sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==",
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-errors": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/es-errors/-/es-errors-1.3.0.tgz",
+      "integrity": "sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==",
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-object-atoms": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/es-object-atoms/-/es-object-atoms-1.1.1.tgz",
+      "integrity": "sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==",
+      "license": "MIT",
+      "dependencies": {
+        "es-errors": "^1.3.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-set-tostringtag": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/es-set-tostringtag/-/es-set-tostringtag-2.1.0.tgz",
+      "integrity": "sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==",
+      "license": "MIT",
+      "dependencies": {
+        "es-errors": "^1.3.0",
+        "get-intrinsic": "^1.2.6",
+        "has-tostringtag": "^1.0.2",
+        "hasown": "^2.0.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
     },
     "node_modules/esbuild": {
       "version": "0.27.3",
@@ -2245,6 +2407,42 @@ dist-ssr
       "dev": true,
       "license": "ISC"
     },
+    "node_modules/follow-redirects": {
+      "version": "1.15.11",
+      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.11.tgz",
+      "integrity": "sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==",
+      "funding": [
+        {
+          "type": "individual",
+          "url": "https://github.com/sponsors/RubenVerborgh"
+        }
+      ],
+      "license": "MIT",
+      "engines": {
+        "node": ">=4.0"
+      },
+      "peerDependenciesMeta": {
+        "debug": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/form-data": {
+      "version": "4.0.5",
+      "resolved": "https://registry.npmjs.org/form-data/-/form-data-4.0.5.tgz",
+      "integrity": "sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==",
+      "license": "MIT",
+      "dependencies": {
+        "asynckit": "^0.4.0",
+        "combined-stream": "^1.0.8",
+        "es-set-tostringtag": "^2.1.0",
+        "hasown": "^2.0.2",
+        "mime-types": "^2.1.12"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
     "node_modules/fsevents": {
       "version": "2.3.3",
       "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
@@ -2260,6 +2458,15 @@ dist-ssr
         "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
       }
     },
+    "node_modules/function-bind": {
+      "version": "1.1.2",
+      "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz",
+      "integrity": "sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==",
+      "license": "MIT",
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
     "node_modules/gensync": {
       "version": "1.0.0-beta.2",
       "resolved": "https://registry.npmjs.org/gensync/-/gensync-1.0.0-beta.2.tgz",
@@ -2268,6 +2475,43 @@ dist-ssr
       "license": "MIT",
       "engines": {
         "node": ">=6.9.0"
+      }
+    },
+    "node_modules/get-intrinsic": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.3.0.tgz",
+      "integrity": "sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==",
+      "license": "MIT",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.2",
+        "es-define-property": "^1.0.1",
+        "es-errors": "^1.3.0",
+        "es-object-atoms": "^1.1.1",
+        "function-bind": "^1.1.2",
+        "get-proto": "^1.0.1",
+        "gopd": "^1.2.0",
+        "has-symbols": "^1.1.0",
+        "hasown": "^2.0.2",
+        "math-intrinsics": "^1.1.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/get-proto": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/get-proto/-/get-proto-1.0.1.tgz",
+      "integrity": "sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==",
+      "license": "MIT",
+      "dependencies": {
+        "dunder-proto": "^1.0.1",
+        "es-object-atoms": "^1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
       }
     },
     "node_modules/glob-parent": {
@@ -2296,6 +2540,18 @@ dist-ssr
         "url": "https://github.com/sponsors/sindresorhus"
       }
     },
+    "node_modules/gopd": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/gopd/-/gopd-1.2.0.tgz",
+      "integrity": "sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==",
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
     "node_modules/has-flag": {
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/has-flag/-/has-flag-4.0.0.tgz",
@@ -2304,6 +2560,45 @@ dist-ssr
       "license": "MIT",
       "engines": {
         "node": ">=8"
+      }
+    },
+    "node_modules/has-symbols": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/has-symbols/-/has-symbols-1.1.0.tgz",
+      "integrity": "sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==",
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/has-tostringtag": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/has-tostringtag/-/has-tostringtag-1.0.2.tgz",
+      "integrity": "sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==",
+      "license": "MIT",
+      "dependencies": {
+        "has-symbols": "^1.0.3"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/hasown": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/hasown/-/hasown-2.0.2.tgz",
+      "integrity": "sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==",
+      "license": "MIT",
+      "dependencies": {
+        "function-bind": "^1.1.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
       }
     },
     "node_modules/hermes-estree": {
@@ -2514,6 +2809,36 @@ dist-ssr
         "yallist": "^3.0.2"
       }
     },
+    "node_modules/math-intrinsics": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/math-intrinsics/-/math-intrinsics-1.1.0.tgz",
+      "integrity": "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==",
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/mime-db": {
+      "version": "1.52.0",
+      "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz",
+      "integrity": "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==",
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
+    "node_modules/mime-types": {
+      "version": "2.1.35",
+      "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz",
+      "integrity": "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==",
+      "license": "MIT",
+      "dependencies": {
+        "mime-db": "1.52.0"
+      },
+      "engines": {
+        "node": ">= 0.6"
+      }
+    },
     "node_modules/minimatch": {
       "version": "3.1.2",
       "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.1.2.tgz",
@@ -2709,6 +3034,12 @@ dist-ssr
         "node": ">= 0.8.0"
       }
     },
+    "node_modules/proxy-from-env": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz",
+      "integrity": "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==",
+      "license": "MIT"
+    },
     "node_modules/punycode": {
       "version": "2.3.1",
       "resolved": "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz",
@@ -2751,9 +3082,9 @@ dist-ssr
       }
     },
     "node_modules/react-router": {
-      "version": "7.13.1",
-      "resolved": "https://registry.npmjs.org/react-router/-/react-router-7.13.1.tgz",
-      "integrity": "sha512-td+xP4X2/6BJvZoX6xw++A2DdEi++YypA69bJUV5oVvqf6/9/9nNlD70YO1e9d3MyamJEBQFEzk6mbfDYbqrSA==",
+      "version": "7.13.2",
+      "resolved": "https://registry.npmjs.org/react-router/-/react-router-7.13.2.tgz",
+      "integrity": "sha512-tX1Aee+ArlKQP+NIUd7SE6Li+CiGKwQtbS+FfRxPX6Pe4vHOo6nr9d++u5cwg+Z8K/x8tP+7qLmujDtfrAoUJA==",
       "license": "MIT",
       "dependencies": {
         "cookie": "^1.0.1",
@@ -2770,6 +3101,22 @@ dist-ssr
         "react-dom": {
           "optional": true
         }
+      }
+    },
+    "node_modules/react-router-dom": {
+      "version": "7.13.2",
+      "resolved": "https://registry.npmjs.org/react-router-dom/-/react-router-dom-7.13.2.tgz",
+      "integrity": "sha512-aR7SUORwTqAW0JDeiWF07e9SBE9qGpByR9I8kJT5h/FrBKxPMS6TiC7rmVO+gC0q52Bx7JnjWe8Z1sR9faN4YA==",
+      "license": "MIT",
+      "dependencies": {
+        "react-router": "7.13.2"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      },
+      "peerDependencies": {
+        "react": ">=18",
+        "react-dom": ">=18"
       }
     },
     "node_modules/resolve-from": {
@@ -3142,9 +3489,11 @@ dist-ssr
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.13.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router": "^7.13.1"
+    "react-router": "^7.13.2",
+    "react-router-dom": "^7.13.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -3198,48 +3547,71 @@ export default defineConfig([
 --- FILE: frontend/src/BookForm.jsx ---
 ```
 import { useState } from 'react';
+import api from './api/axiosConfig';
 
-function BookForm({ onBookAdded }) {
-    // 1. Define state for each input field
+function BookForm({ onAdded }) {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
-    const [price, setPrice] = useState(0);
-    const [copies, setCopies] = useState(1);
+    const [price, setPrice] = useState('');
 
-    // 2. The Submit Handler
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const newBook = {
-            title,
-            author,
+            productType: "BookEntity",
+            title: title,
+            author: author,
             price: parseFloat(price) || 0.0,
-            copies: parseInt(copies) || 1,
-            productType: "BookEntity"
+            copies: 10
         };
 
-        fetch('/api/books', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newBook),
-        })
-            .then(response => response.json())
-            .then(savedBook => {
-                alert("Book Saved!");
-                onBookAdded(savedBook);
-                setTitle('');
-                setAuthor('');
-                setPrice(0);
-            });
+        api.post('/books', newBook)
+            .then(res => {
+                alert("Book added to library successfully!");
+                onAdded(res.data);
+                setTitle(''); setAuthor(''); setPrice('');
+            })
+            .catch(err => console.error("Database error:", err));
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ border: '2px solid blue', padding: '20px', marginBottom: '20px' }}>
-            <h3>Add New Book</h3>
-            <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            <input type="text" placeholder="Author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
-            <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-            <button type="submit">Save to Database</button>
+        <form onSubmit={handleSubmit} className="admin-card" style={{ borderLeft: '10px solid #6366f1' }}>
+            <h2 style={{ color: '#6366f1', marginTop: 0 }}>Add New Book</h2>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {/* Title Input */}
+                <input
+                    placeholder="Book Title"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    required
+                />
+
+                {/* Author and Price Row */}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input
+                        placeholder="Author Name"
+                        value={author}
+                        onChange={e => setAuthor(e.target.value)}
+                        required
+                        style={{ flex: 2 }}
+                    />
+                    <input
+                        type="number"
+                        step="0.01"
+                        placeholder="Price"
+                        value={price}
+                        onChange={e => setPrice(e.target.value)}
+                        required
+                        style={{ flex: 1 }}
+                    />
+                </div>
+
+                {/* Submit Button */}
+                <button type="submit" style={{ backgroundColor: '#6366f1', color: 'white', fontSize: '1rem' }}>
+                    Add to Inventory
+                </button>
+            </div>
         </form>
     );
 }
@@ -3250,42 +3622,45 @@ export default BookForm;
 --- FILE: frontend/src/LaptopForm.jsx ---
 ```
 import { useState } from 'react';
+import api from './api/axiosConfig';
 
-function LaptopForm({ onLaptopAdded }) {
+function LaptopForm({ onAdded }) {
     const [brand, setBrand] = useState('');
-    const [price, setPrice] = useState(0);
-    const [ramSize, setRamSize] = useState(8);
+    const [price, setPrice] = useState('');
+    const [ram, setRam] = useState(8);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         const newLaptop = {
-            brand,
+            productType: "LaptopEntity", // Mandatory for our Java setup
+            brand: brand,
             price: parseFloat(price) || 0.0,
-            ramSize: parseInt(ramSize) || 8,
-            productType: "LaptopEntity" // <--- ADD THIS
+            ramSize: parseInt(ram) || 8
         };
 
-        fetch('/api/laptops', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newLaptop),
-        })
-            .then(res => res.json())
-            .then(saved => {
-                alert("Laptop Added to Inventory!");
-                onLaptopAdded(saved);
-                setBrand(''); setPrice(0);
-            });
+        api.post('/laptops', newLaptop)
+            .then(res => {
+                alert("Electronics Catalog Updated!");
+                onAdded(res.data);
+            })
+            .catch(err => console.error("Post error:", err));
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ border: '1px solid #bb86fc', padding: '20px', borderRadius: '8px', marginBottom: '20px', backgroundColor: '#1e1e1e' }}>
-            <h3 style={{ color: '#bb86fc' }}>Add New Laptop</h3>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <input type="text" placeholder="Brand (e.g. Dell)" value={brand} onChange={(e) => setBrand(e.target.value)} required />
-                <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-                <input type="number" placeholder="RAM (GB)" value={ramSize} onChange={(e) => setRamSize(e.target.value)} required />
-                <button type="submit" style={{ backgroundColor: '#03dac6', color: 'black' }}>Add Laptop</button>
+        <form onSubmit={handleSubmit} className="admin-card" style={{ borderLeft: '10px solid #f43f5e' }}>
+            <h2 style={{ color: '#f43f5e', marginTop: 0 }}>Add New Laptop</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <input placeholder="Manufacturer / Brand (e.g. Apple, Dell)" value={brand} onChange={e => setBrand(e.target.value)} required />
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input type="number" step="0.01" placeholder="MSRP Price" value={price} onChange={e => setPrice(e.target.value)} required style={{ flex: 1 }} />
+                    <input type="number" placeholder="RAM Size (GB)" value={ram} onChange={e => setRam(e.target.value)} required style={{ flex: 1 }} />
+                </div>
+
+                <button type="submit" style={{ backgroundColor: '#f43f5e', color: 'white', fontSize: '1rem' }}>
+                    Add to Inventory
+                </button>
             </div>
         </form>
     );
@@ -3297,57 +3672,61 @@ export default LaptopForm;
 --- FILE: frontend/src/Laptop.jsx ---
 ```
 import { useState } from 'react';
+import { useAuth } from './provider/authProvider'; // Import Auth Context
+import api from './api/axiosConfig';
 
-function Laptop({ id, brand, price, ramSize, onDelete, onUpdate }) {
+function Laptop({ id, brand, price, ramSize, onUpdate, onDelete }) {
+    const { isAdmin } = useAuth(); // NEW: Check role
     const [isEditing, setIsEditing] = useState(false);
-    const [tempBrand, setTempBrand] = useState(brand);
-    const [tempPrice, setTempPrice] = useState(price);
-    const [tempRam, setTempRam] = useState(ramSize);
+    const [tBrand, setTBrand] = useState(brand);
+    const [tPrice, setTPrice] = useState(price);
 
-    const handleSave = () => {
-        const parsedPrice = parseFloat(tempPrice);
-        const parsedRam = parseInt(tempRam);
-
-        const updatedLaptop = {
-            id: id,
-            productType: "LaptopEntity", // <--- ADD THIS
-            brand: tempBrand || "Unknown",
-            price: isNaN(parsedPrice) ? 0.0 : parsedPrice,
-            ramSize: isNaN(parsedRam) ? 8 : parsedRam
-        };
-
-        onUpdate(id, updatedLaptop);
+    const save = () => {
+        onUpdate(id, {
+            id,
+            brand: tBrand,
+            price: parseFloat(tPrice) || 0.0,
+            ramSize: ramSize
+        });
         setIsEditing(false);
     };
 
-    if (isEditing) {
-        return (
-            <div className="laptop-row editing" style={{ margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', gap: '10px', backgroundColor: '#eef', border: '2px solid #4444ff' }}>
-                <input type="text" value={tempBrand} onChange={(e) => setTempBrand(e.target.value)} style={{ flex: 2 }} />
-
-                {/* Added step and min for better browser validation */}
-                <input type="number" step="0.01" min="0" value={tempPrice} onChange={(e) => setTempPrice(e.target.value)} style={{ width: '100px' }} />
-                <input type="number" min="1" value={tempRam} onChange={(e) => setTempRam(e.target.value)} style={{ width: '80px' }} />
-
-                <button onClick={handleSave} style={{ backgroundColor: '#28a745', color: 'white' }}>Save</button>
-                <button onClick={() => setIsEditing(false)} style={{ backgroundColor: '#6c757d', color: 'white' }}>Cancel</button>
-            </div>
-        );
-    }
-
     return (
-        <div className="laptop-row" style={{ border: '1px solid #ccc', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9f9f9' }}>
-            <div style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: '0', color: '#333' }}>💻 {brand}</h3>
-                <p style={{ margin: '5px 0 0 0', color: '#666' }}>
-                    RAM: <strong>{ramSize}GB</strong> | <strong>Price:</strong> ${price != null ? price.toFixed(2) : "0.00"}
-                </p>
-            </div>
-            <div>
-                {/* Updated colors to match your theme (Yellow for Edit, Red for Delete) */}
-                <button onClick={() => setIsEditing(true)} style={{ backgroundColor: '#ffc107', marginRight: '5px' }}>Edit</button>
-                <button onClick={() => onDelete(id)} style={{ backgroundColor: '#ff4444', color: 'white' }}>Delete</button>
-            </div>
+        <div className="admin-card">
+            {isEditing ? (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input style={{flex: 2}} value={tBrand} onChange={e => setTBrand(e.target.value)} />
+                    <input type="number" value={tPrice} onChange={e => setTPrice(e.target.value)} />
+                    <button className="btn-save" onClick={save}>Save</button>
+                    <button className="btn-cancel" onClick={() => setIsEditing(false)}>Cancel</button>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{textAlign: 'left'}}>
+                        <h3 style={{margin:0}}>💻 {brand}</h3>
+                        <p style={{margin:0, opacity: 0.7}}>RAM: {ramSize}GB | Price: ${price?.toFixed(2)}</p>
+                    </div>
+                    <div style={{display:'flex', gap: '8px'}}>
+                        {/* ROLE PROTECTION */}
+                        {/* ADD TO CART - Visible to all */}
+                        <button
+                            style={{background:'#6366f1', color:'white'}}
+                            onClick={() => api.post(`/cart/add/${id}`).then(() => alert("Added to cart!"))}
+                        >
+                            🛒 Add to Cart
+                        </button>
+                        {isAdmin && (
+                            <>
+                                <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
+                                <button style={{background:'#ef4444', color:'white'}}
+                                        onClick={() => api.delete(`/laptops/${id}`).then(onDelete)}>
+                                    Delete
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -3358,65 +3737,111 @@ export default Laptop;
 --- FILE: frontend/src/Magazine.jsx ---
 ```
 import { useState } from 'react';
+import { useAuth } from './provider/authProvider'; // 1. Import Auth Context
+import api from './api/axiosConfig'; // 2. Import custom Axios api
 
-function Magazine({ id, title, price, orderQty, currentIssue, onDelete, onUpdate }) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [tempTitle, setTempTitle] = useState(title);
-    const [tempPrice, setTempPrice] = useState(price);
-    const [tempOrderQty, setTempOrderQty] = useState(orderQty);
+function Magazine({ id, title, price, orderQty, currentIssue, onUpdate, onDelete }) {
+    const { isAdmin } = useAuth(); // 3. Get admin status
+    const[isEditing, setIsEditing] = useState(false);
+    const [tTitle, setTTitle] = useState(title);
+    const [tPrice, setTPrice] = useState(price);
 
-    const handleSave = () => {
-        const parsedPrice = parseFloat(tempPrice);
+    const save = () => {
+        let dateStr = currentIssue;
+        if (dateStr.includes('.')) dateStr = dateStr.split('.')[0];
+        if (dateStr.includes('Z')) dateStr = dateStr.replace('Z', '');
 
-        // Clean the date (Strip 'Z' and milliseconds for LocalDateTime)
-        let cleanDate = currentIssue;
-        if (cleanDate && typeof cleanDate === 'string') {
-            cleanDate = cleanDate.split('.')[0].replace('Z', '');
-        }
-
-        const updatedMag = {
-            id: id,
-            productType: "MagazineEntity", // <--- THIS IS THE MISSING KEY
-            title: tempTitle || "Untitled",
-            price: isNaN(parsedPrice) ? 0.0 : parsedPrice,
-            orderQty: parseInt(tempOrderQty) || 0,
-            copies: 1,
-            currentIssue: cleanDate
-        };
-
-        onUpdate(id, updatedMag);
+        onUpdate(id, {
+            id,
+            title: tTitle,
+            price: parseFloat(tPrice) || 0.0,
+            orderQty: orderQty,
+            copies: 10, // Added default copies
+            currentIssue: dateStr
+        });
         setIsEditing(false);
     };
 
-    if (isEditing) {
-        return (
-            <div className="magazine-row editing" style={{ border: '2px solid #4444ff', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', gap: '10px', backgroundColor: '#eef' }}>
-                <input type="text" value={tempTitle} onChange={(e) => setTempTitle(e.target.value)} style={{ flex: 2 }} />
-                <input type="number" value={tempPrice} onChange={(e) => setTempPrice(e.target.value)} style={{ width: '100px' }} />
-                <input type="number" value={tempOrderQty} onChange={(e) => setTempOrderQty(e.target.value)} style={{ width: '80px' }} />
-                <button onClick={handleSave} style={{ backgroundColor: '#28a745', color: 'white' }}>Save</button>
-                <button onClick={() => setIsEditing(false)} style={{ backgroundColor: '#6c757d', color: 'white' }}>Cancel</button>
-            </div>
-        );
-    }
-
     return (
-        <div className="magazine-row" style={{ border: '1px solid #ccc', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9f9f9' }}>
-            <div className="mag-info" style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: '0 0 5px 0' }}>📰 {title}</h3>
-                <p style={{ margin: '0' }}>
-                    <strong>Price:</strong> ${price != null ? price.toFixed(2) : "0.00"} | <strong>Order Qty:</strong> {orderQty} | <strong>Issue:</strong> {new Date(currentIssue).toLocaleDateString()}
-                </p>
-            </div>
-            <div className="mag-actions">
-                <button onClick={() => setIsEditing(true)} style={{ backgroundColor: '#ffc107', marginRight: '5px' }}>Edit</button>
-                <button onClick={() => onDelete(id)} style={{ backgroundColor: '#ff4444', color: 'white' }}>Delete</button>
-            </div>
+        <div className="admin-card">
+            {isEditing ? (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input style={{flex: 2}} value={tTitle} onChange={e => setTTitle(e.target.value)} />
+                    <input type="number" style={{width: '100px'}} value={tPrice} onChange={e => setTPrice(e.target.value)} />
+                    <button style={{background:'#10b981', color:'white'}} onClick={save}>Save</button>
+                    <button style={{background:'#64748b', color:'white'}} onClick={() => setIsEditing(false)}>X</button>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{textAlign: 'left'}}>
+                        <h3 style={{margin:0, color: '#f1f5f9'}}>📰 {title}</h3>
+                        <p style={{margin:'5px 0 0 0', opacity: 0.7, color: '#94a3b8'}}>Price: ${price?.toFixed(2)} | Qty: {orderQty}</p>
+                    </div>
+                    <div style={{display:'flex', gap: '8px'}}>
+                        {/* ADD TO CART - Visible to all */}
+                        <button
+                            style={{background:'#6366f1', color:'white'}}
+                            onClick={() => api.post(`/cart/add/${id}`).then(() => alert("Added to cart!"))}
+                        >
+                            🛒 Add to Cart
+                        </button>
+                        {/* 4. PROTECT BUTTONS WITH isAdmin */}
+                        {isAdmin && (
+                            <>
+                                <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
+                                {/* 5. Use api.delete instead of fetch */}
+                                <button style={{background:'#ef4444', color:'white'}} onClick={() => api.delete(`/magazines/${id}`).then(onDelete)}>Delete</button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
 export default Magazine;
+```
+
+--- FILE: frontend/src/provider/authProvider.jsx ---
+```
+import { createContext, useContext, useMemo, useState } from "react";
+
+const AuthContext = createContext();
+
+const AuthProvider = ({ children }) => {
+    const [token, setToken_] = useState(localStorage.getItem("token"));
+
+    const getRolesFromToken = (t) => {
+        if (!t) return [];
+        try {
+            const base64Url = t.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const payload = JSON.parse(window.atob(base64));
+            return payload.roles || [];
+        } catch (e) { return []; }
+    };
+
+    const roles = useMemo(() => getRolesFromToken(token), [token]);
+
+    const setToken = (newToken) => {
+        setToken_(newToken);
+        if (newToken) localStorage.setItem("token", newToken);
+        else localStorage.removeItem("token");
+    };
+
+    const contextValue = useMemo(() => ({
+        token,
+        roles,
+        isAdmin: roles.includes("ROLE_ADMIN"),
+        setToken,
+    }), [token, roles]);
+
+    return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => useContext(AuthContext);
+export default AuthProvider;
 ```
 
 --- FILE: frontend/src/App.css ---
@@ -3470,132 +3895,126 @@ export default Magazine;
 ```
 :root {
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #0f172a; /* Slate 900 */
-    color: #f8fafc; /* Slate 50 */
-    line-height: 1.5;
+    background-color: #0f172a;
+    color: #f1f5f9;
 }
 
-body { margin: 0; display: block; min-height: 100vh; }
+body { margin: 0; display: block; min-height: 100vh; padding: 20px; }
 
-h1 { font-size: 2.5rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem; }
-h2 { color: #94a3b8; font-weight: 500; }
-
-/* Global Card Style */
 .admin-card {
-    background-color: #1e293b; /* Slate 800 */
+    background-color: #1e293b;
     border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 16px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    color: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
 }
 
-/* Input Styling */
+h1 { font-size: 2.5rem; font-weight: 800; color: #ffffff; }
+
 input {
     background-color: #0f172a;
     border: 1px solid #475569;
     color: white;
-    padding: 10px 14px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 8px;
     font-size: 1rem;
-    outline: none;
 }
-input:focus { border-color: #6366f1; ring: 2px solid #6366f1; }
 
-/* Button Styling */
 button {
     padding: 10px 20px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     border: none;
     transition: all 0.2s;
 }
-button.primary { background-color: #6366f1; color: white; }
-button.secondary { background-color: #475569; color: white; }
-button.danger { background-color: #ef4444; color: white; }
-button.warning { background-color: #f59e0b; color: white; }
-button:hover { opacity: 0.9; transform: scale(1.02); }
+
+button:hover { transform: translateY(-1px); filter: brightness(1.1); }
 ```
 
 --- FILE: frontend/src/Book.jsx ---
 ```
 import { useState } from 'react';
+import { useAuth } from './provider/authProvider';
+import api from './api/axiosConfig';
 
-function Book({ id, title, author, price, onDelete, onUpdate }) {
-    // 1. Local state for "Edit Mode"
+function Book({ id, title, author, price, onUpdate, onDelete }) {
+    const { isAdmin } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
-    const [tempTitle, setTempTitle] = useState(title);
-    const [tempAuthor, setTempAuthor] = useState(author);
-    const [tempPrice, setTempPrice] = useState(price);
+    const [tTitle, setTTitle] = useState(title);
+    const[tAuthor, setTAuthor] = useState(author);
+    const [tPrice, setTPrice] = useState(price);
 
-    // 2. Handle Save
-    const handleSave = () => {
-        const parsedPrice = parseFloat(tempPrice);
-
-        const updatedBook = {
-            id: id,
-            productType: "BookEntity", // <--- ADD THIS
-            title: tempTitle || "Untitled",
-            author: tempAuthor || "Unknown",
-            price: isNaN(parsedPrice) ? 0.0 : parsedPrice,
-            copies: 1
-        };
-
-        onUpdate(id, updatedBook);
+    const save = () => {
+        onUpdate(id, {
+            id,
+            title: tTitle,
+            author: tAuthor,
+            price: parseFloat(tPrice) || 0.0,
+            copies: 10
+        });
         setIsEditing(false);
     };
 
-    // 3. Conditional Rendering: EDIT MODE
-    if (isEditing) {
-        return (
-            <div className="book-row editing" style={{ border: '2px solid #4444ff', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', gap: '10px', backgroundColor: '#eef' }}>
-                <input type="text" value={tempTitle} onChange={(e) => setTempTitle(e.target.value)} style={{ flex: 2 }} />
-                <input type="text" value={tempAuthor} onChange={(e) => setTempAuthor(e.target.value)} style={{ flex: 1 }} />
-                <input type="number" value={tempPrice} onChange={(e) => setTempPrice(e.target.value)} style={{ width: '80px' }} />
-
-                <button onClick={handleSave} style={{ backgroundColor: '#28a745', color: 'white' }}>Save</button>
-                <button onClick={() => setIsEditing(false)} style={{ backgroundColor: '#6c757d', color: 'white' }}>Cancel</button>
-            </div>
-        );
-    }
-
-    // 4. Conditional Rendering: VIEW MODE
     return (
-        <div className="book-row" style={{ border: '1px solid #ccc', margin: '10px 0', padding: '15px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9f9f9' }}>
-            <div className="book-info" style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: '0 0 5px 0' }}>📚 {title}</h3>
-                <p style={{ margin: '0' }}>
-                    <strong>Author:</strong> {author} | <strong>Price:</strong> ${price ? price.toFixed(2) : "0.00"}
-                </p>
-            </div>
+        <div className="admin-card">
+            {isEditing ? (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input style={{flex: 2}} value={tTitle} onChange={e => setTTitle(e.target.value)} />
+                    <input style={{flex: 1}} value={tAuthor} onChange={e => setTAuthor(e.target.value)} />
+                    <input type="number" style={{width: '80px'}} value={tPrice} onChange={e => setTPrice(e.target.value)} />
+                    <button style={{background:'#10b981', color:'white'}} onClick={save}>Save</button>
+                    <button style={{background:'#64748b', color:'white'}} onClick={() => setIsEditing(false)}>X</button>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{textAlign: 'left'}}>
+                        <h3 style={{margin:0, color: '#f1f5f9'}}>📚 {title}</h3>
+                        <p style={{margin:'5px 0 0 0', color: '#94a3b8'}}>Author: {author} | Price: ${price?.toFixed(2)}</p>
+                    </div>
+                    <div style={{display:'flex', gap: '8px'}}>
+                        {/* ADD TO CART - Visible to all */}
+                        <button
+                            style={{background:'#6366f1', color:'white'}}
+                            onClick={() => api.post(`/cart/add/${id}`).then(() => alert("Added to cart!"))}
+                        >
+                            🛒 Add to Cart
+                        </button>
+                        {/* 4. PROTECT BUTTONS WITH isAdmin */}
+                        {isAdmin && (
+                            <>
+                                <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
 
-            <div className="book-actions">
-                <button onClick={() => setIsEditing(true)} style={{ backgroundColor: '#ffc107', marginRight: '5px' }}>Edit</button>
-                <button onClick={() => onDelete(id)} style={{ backgroundColor: '#ff4444', color: 'white' }}>Delete</button>
-            </div>
+                                <button style={{background:'#ef4444', color:'white'}} onClick={() => api.delete(`/books/${id}`).then(onDelete)}>Delete</button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
 export default Book;
-
 ```
 
 --- FILE: frontend/src/main.jsx ---
 ```
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router' // Import the Router
+import { BrowserRouter } from 'react-router'
+import AuthProvider from './provider/authProvider'
 import './index.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </AuthProvider>
     </StrictMode>,
 )
 ```
@@ -3603,7 +4022,7 @@ createRoot(document.getElementById('root')).render(
 --- FILE: frontend/src/App.jsx ---
 ```
 import { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router';
+import { Routes, Route, useNavigate, Navigate } from 'react-router'; // Added Navigate
 import Navbar from './Navbar';
 import Home from './Home';
 import Book from './Book';
@@ -3612,8 +4031,15 @@ import Magazine from './Magazine';
 import MagazineForm from './MagazineForm';
 import Laptop from './Laptop';
 import LaptopForm from './LaptopForm';
+import Login from './pages/Login'; // Added Login import
+import Logout from './pages/Logout'; // Added Logout import
+import Cart from './Cart';
+import { useAuth } from './provider/authProvider'; // Added useAuth import
+import api from './api/axiosConfig'; // Added our custom Axios instance
+import './App.css';
 
 function App() {
+    const { token } = useAuth(); // NEW: Get token for route protection
     const [books, setBooks] = useState([]);
     const [magazines, setMagazines] = useState([]);
     const [laptops, setLaptops] = useState([]);
@@ -3621,48 +4047,85 @@ function App() {
     const navigate = useNavigate();
 
     const refreshData = async () => {
-        try {
-            const [b, m, l] = await Promise.all([
-                fetch('/api/books').then(r => r.json()),
-                fetch('/api/magazines').then(r => r.json()),
-                fetch('/api/laptops').then(r => r.json())
-            ]);
-            setBooks(b); setMagazines(m); setLaptops(l);
+        // If not logged in, don't attempt to fetch secure data
+        if (!token) {
             setLoading(false);
-        } catch (e) { console.error("Database offline"); }
+            return;
+        }
+
+        try {
+            // Using our Axios api instead of raw fetch so JWT is attached!
+            const [b, m, l] = await Promise.all([
+                api.get('/books'),
+                api.get('/magazines'),
+                api.get('/laptops')
+            ]);
+            setBooks(b.data);
+            setMagazines(m.data);
+            setLaptops(l.data);
+            setLoading(false);
+        } catch (e) {
+            console.error("Database offline or auth failed");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    useEffect(() => { refreshData(); }, []);
+    useEffect(() => { refreshData(); }, [token]); // Re-fetch when user logs in
 
-    const handleUpdate = (id, data, apiPath, setter) => {
-        fetch(`/api/${apiPath}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        }).then(res => {
-            if (!res.ok) throw new Error("Server Error");
-            return res.json();
-        }).then(saved => {
-            setter(prev => prev.map(item => item.id === id ? saved : item));
-        }).catch(err => alert("Update Failed: " + err.message));
+    // Master Update Handler using axios instance
+    const handleUpdate = async (id, data, path, setter) => {
+        try {
+            const res = await api.put(`/${path}/${id}`, data);
+            setter(prev => prev.map(item => item.id === id ? res.data : item));
+            alert("Update Successful!"); // Optional: Add a success message
+        } catch (err) {
+            // Log the specific error to console so you can see if it's 401, 400, or 500
+            console.error("Update Error Details:", err.response?.data || err.message);
+
+            if (err.response?.status === 401) {
+                alert("Your session has expired. Please log in again.");
+            } else {
+                alert("Update Failed: " + (err.response?.data?.message || "Check console for details"));
+            }
+        }
     };
 
-    if (loading) return <div style={{textAlign:'center', marginTop:'20%'}}><h2>Syncing with Cloud...</h2></div>;
+    if (loading) return <h2 style={{textAlign:'center', marginTop:'20%'}}>Connecting to Admin Services...</h2>;
 
     return (
-        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
-            <Navbar />
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+            {/* 1. Only show Navbar if logged in */}
+            {token && <Navbar />}
+
             <Routes>
-                <Route path="/" element={<Home bc={books.length} mc={magazines.length} lc={laptops.length} />} />
+                {/* 2. Public Route */}
+                <Route path="/login" element={!token ? <Login /> : <Navigate to="/" />} />
+                <Route path="/logout" element={<Logout />} />
 
-                <Route path="/inventory" element={<div><h1>Books</h1>{books.map(i => <Book key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'books', setBooks)} onDelete={refreshData}/>)}</div>} />
-                <Route path="/add" element={<BookForm onAdded={(n) => {setBooks([...books, n]); navigate('/inventory')}} />} />
+                <Route path="/cart" element={token ? <Cart /> : <Navigate to="/login" />} />
 
-                <Route path="/magazines" element={<div><h1>Magazines</h1>{magazines.map(i => <Magazine key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'magazines', setMagazines)} onDelete={refreshData}/>)}</div>} />
-                <Route path="/add-magazine" element={<MagazineForm onAdded={(n) => {setMagazines([...magazines, n]); navigate('/magazines')}} />} />
+                {/* 3. Protected Dashboard (If no token, redirect to login) */}
+                <Route path="/" element={token ? <Home bookCount={books.length} magCount={magazines.length} lapCount={laptops.length} /> : <Navigate to="/login" />} />
 
-                <Route path="/laptops" element={<div><h1>Laptops</h1>{laptops.map(i => <Laptop key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'laptops', setLaptops)} onDelete={refreshData}/>)}</div>} />
-                <Route path="/add-laptop" element={<LaptopForm onAdded={(n) => {setLaptops([...laptops, n]); navigate('/laptops')}} />} />
+                {/* 4. Protected Inventory Routes (If no token, redirect to login) */}
+                <Route path="/inventory" element={token ? (
+                    <div><h1>Book Inventory</h1>{books.map(i => <Book key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'books', setBooks)} onDelete={refreshData}/>)}</div>
+                ) : <Navigate to="/login" />} />
+
+                <Route path="/add" element={token ? <BookForm onAdded={(n) => { setBooks([...books, n]); navigate('/inventory'); }} /> : <Navigate to="/login" />} />
+
+                <Route path="/magazines" element={token ? (
+                    <div><h1>Magazine Inventory</h1>{magazines.map(i => <Magazine key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'magazines', setMagazines)} onDelete={refreshData}/>)}</div>
+                ) : <Navigate to="/login" />} />
+
+                <Route path="/add-magazine" element={token ? <MagazineForm onAdded={(n) => { setMagazines([...magazines, n]); navigate('/magazines'); }} /> : <Navigate to="/login" />} />
+
+                <Route path="/laptops" element={token ? (
+                    <div><h1>Laptop Inventory</h1>{laptops.map(i => <Laptop key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'laptops', setLaptops)} onDelete={refreshData}/>)}</div>
+                ) : <Navigate to="/login" />} />
+
+                <Route path="/add-laptop" element={token ? <LaptopForm onAdded={(n) => { setLaptops([...laptops, n]); navigate('/laptops'); }} /> : <Navigate to="/login" />} />
             </Routes>
         </div>
     );
@@ -3674,101 +4137,246 @@ export default App;
 --- FILE: frontend/src/Navbar.jsx ---
 ```
 import { Link } from 'react-router';
+import { useAuth } from './provider/authProvider';
 
 function Navbar() {
+    const { isAdmin, token } = useAuth();
+
+    if (!token) return null; // Don't show navbar if not logged in
+
     return (
-        <nav style={{
-            padding: '1rem',
-            backgroundColor: '#1e1e1e',
-            borderBottom: '1px solid #333',
-            marginBottom: '30px',
-            display: 'flex',
-            gap: '20px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexWrap: 'wrap'
-        }}>
-            <Link to="/" style={linkStyle}>🏠 Home</Link>
+        <nav style={navStyle}>
+            <Link to="/" style={logoStyle}>🚀 DASHBOARD</Link>
 
-            <div style={groupStyle}>
-                <Link to="/inventory" style={linkStyle}>📚 Books</Link>
-                <Link to="/add" style={{...addBtnStyle, backgroundColor: '#3700b3'}}>+ Book</Link>
+            <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
+
+                {/* BOOKS GROUP */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Link to="/inventory" style={linkStyle}>BOOKS</Link>
+                    {isAdmin && (
+                        <Link to="/add" style={{ ...baseAddStyle, backgroundColor: '#6366f1' }}>
+                            + Add
+                        </Link>
+                    )}
+                </div>
+
+                {/* MAGAZINES GROUP */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Link to="/magazines" style={linkStyle}>MAGAZINES</Link>
+                    {isAdmin && (
+                        <Link to="/add-magazine" style={{ ...baseAddStyle, backgroundColor: '#10b981' }}>
+                            + Add
+                        </Link>
+                    )}
+                </div>
+
+                {/* LAPTOPS GROUP */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Link to="/laptops" style={linkStyle}>LAPTOPS</Link>
+                    {isAdmin && (
+                        <Link to="/add-laptop" style={{ ...baseAddStyle, backgroundColor: '#f43f5e' }}>
+                            + Add
+                        </Link>
+                    )}
+                </div>
+
+                <Link to="/cart" style={{ ...linkStyle, color: '#f59e0b' }}>🛒 CART</Link>
+
             </div>
 
-            <div style={groupStyle}>
-                <Link to="/magazines" style={linkStyle}>📰 Magazines</Link>
-                <Link to="/add-magazine" style={{...addBtnStyle, backgroundColor: '#018786'}}>+ Magazine</Link>
-            </div>
-
-            <div style={groupStyle}>
-                <Link to="/laptops" style={linkStyle}>💻 Laptops</Link>
-                <Link to="/add-laptop" style={{...addBtnStyle, backgroundColor: '#cf6679'}}>+ Laptop</Link>
-            </div>
+            <Link to="/logout" style={{ color: '#ef4444', textDecoration: 'none', fontWeight:'bold' }}>Logout</Link>
         </nav>
     );
 }
 
-const linkStyle = { color: '#e0e0e0', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' };
-const groupStyle = { display: 'flex', alignItems: 'center', gap: '8px', borderLeft: '1px solid #444', paddingLeft: '15px' };
-const addBtnStyle = {
-    color: 'black',
-    padding: '4px 10px',
-    borderRadius: '4px',
+// --- STYLES ---
+
+const navStyle = {
+    padding: '1rem 2rem',
+    backgroundColor: '#1e293b',
+    borderRadius: '12px',
+    marginBottom: '40px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+};
+
+const logoStyle = {
+    color: 'white',
     textDecoration: 'none',
-    fontSize: '0.8rem',
+    fontWeight: '800'
+};
+
+const linkStyle = {
+    color: '#94a3b8',
+    textDecoration: 'none',
+    fontSize: '0.9rem',
     fontWeight: 'bold'
+};
+
+// Base style for the Add buttons to look like actual "buttons" instead of text links
+const baseAddStyle = {
+    color: 'white',
+    textDecoration: 'none',
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    transition: 'filter 0.2s',
 };
 
 export default Navbar;
 ```
 
+--- FILE: frontend/src/Cart.jsx ---
+```
+import { useState, useEffect } from 'react';
+import api from './api/axiosConfig';
+
+function Cart() {
+    const [cart, setCart] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchCart = async () => {
+        try {
+            const res = await api.get('/cart');
+            setCart(res.data);
+        } catch (err) {
+            console.error("Failed to fetch cart", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCart();
+    }, []);
+
+    const handleRemove = async (productId) => {
+        try {
+            await api.delete(`/cart/remove/${productId}`);
+            fetchCart(); // Refresh list
+        } catch (err) {
+            alert("Failed to remove item.");
+        }
+    };
+
+    if (loading) return <h2 style={{ textAlign: 'center' }}>Loading Cart...</h2>;
+
+    const items = cart?.products || [];
+    const total = items.reduce((acc, item) => acc + (item.price || 0), 0);
+
+    return (
+        <div style={{ textAlign: 'left' }}>
+            <h1>🛒 Shopping Cart</h1>
+            {items.length === 0 ? (
+                <div className="admin-card">
+                    <p>Your cart is empty.</p>
+                </div>
+            ) : (
+                <>
+                    {items.map((item, index) => (
+                        <div key={`${item.id}-${index}`} className="admin-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                                <h3 style={{ margin: 0 }}>{item.title || item.brand}</h3>
+                                <p style={{ margin: 0, opacity: 0.7 }}>Price: ${item.price?.toFixed(2)}</p>
+                            </div>
+                            <button
+                                style={{ background: '#ef4444', color: 'white' }}
+                                onClick={() => handleRemove(item.id)}
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    ))}
+                    <div className="admin-card" style={{ borderTop: '4px solid #6366f1', textAlign: 'right' }}>
+                        <h2 style={{ margin: 0 }}>Total: ${total.toFixed(2)}</h2>
+                        <button style={{ background: '#6366f1', color: 'white', marginTop: '20px', padding: '12px 24px' }}>
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+}
+
+export default Cart;
+```
+
+--- FILE: frontend/src/api/axiosConfig.js ---
+```
+import axios from 'axios';
+
+const api = axios.create({ baseURL: '/api/rest' });
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) config.headers['Authorization'] = `Bearer ${token}`;
+    return config;
+});
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            localStorage.removeItem('token');
+            // Force a reload to the login page with the "expired" warning
+            window.location.href = '/login?expired=true';
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default api;
+```
+
 --- FILE: frontend/src/MagazineForm.jsx ---
 ```
 import { useState } from 'react';
+import api from './api/axiosConfig';
 
-function MagazineForm({ onMagAdded }) {
+function MagazineForm({ onAdded }) {
     const [title, setTitle] = useState('');
-    const [price, setPrice] = useState(0);
-    const [orderQty, setOrderQty] = useState(0);
+    const [price, setPrice] = useState('');
+    const [qty, setQty] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // 1. Ensure numbers are parsed correctly
-        const parsedPrice = parseFloat(price);
-        const parsedQty = parseInt(orderQty);
-
+        // Build the object for a Polymorphic backend
         const newMag = {
-            title,
+            productType: "MagazineEntity", // Mandatory for our Java setup
+            title: title,
             price: parseFloat(price) || 0.0,
-            orderQty: parseInt(orderQty) || 0,
-            copies: 10,
-            productType: "MagazineEntity", // <--- ADD THIS
-            currentIssue: new Date().toISOString().split('Z')[0]
+            orderQty: parseInt(qty) || 0,
+            copies: 10, // Default seed value
+            currentIssue: new Date().toISOString().split('.')[0]
         };
 
-        fetch('/api/magazines', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newMag),
-        })
-            .then(response => response.json())
-            .then(savedMag => {
-                alert("Magazine Saved!");
-                onMagAdded(savedMag);
-                setTitle('');
-                setPrice(0);
-                setOrderQty(0);
-            });
+        api.post('/magazines', newMag)
+            .then(res => {
+                alert("Magazine Registered!");
+                onAdded(res.data);
+            })
+            .catch(err => console.error("Post error:", err));
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ border: '2px solid blue', padding: '20px', marginBottom: '20px' }}>
-            <h3>Add New Magazine</h3>
-            <input type="text" placeholder="Magazine Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            <input type="number" step="0.01" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-            <input type="number" placeholder="Order Quantity" value={orderQty} onChange={(e) => setOrderQty(e.target.value)} required />
-            <button type="submit">Save Magazine</button>
+        <form onSubmit={handleSubmit} className="admin-card" style={{ borderLeft: '10px solid #10b981' }}>
+            <h2 style={{ color: '#10b981', marginTop: 0 }}>Add New Magazine</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <input placeholder="Magazine Title (e.g. National Geographic)" value={title} onChange={e => setTitle(e.target.value)} required />
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <input type="number" step="0.01" placeholder="Price" value={price} onChange={e => setPrice(e.target.value)} required style={{ flex: 1 }} />
+                    <input type="number" placeholder="Initial Order Qty" value={qty} onChange={e => setQty(e.target.value)} required style={{ flex: 1 }} />
+                </div>
+
+                <button type="submit" style={{ backgroundColor: '#10b981', color: 'white', fontSize: '1rem' }}>
+                    Add to Inventory
+                </button>
+            </div>
         </form>
     );
 }
@@ -3776,190 +4384,227 @@ function MagazineForm({ onMagAdded }) {
 export default MagazineForm;
 ```
 
+--- FILE: frontend/src/pages/Login.jsx ---
+```
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router";
+import { useAuth } from "../provider/authProvider";
+import api from "../api/axiosConfig";
+
+const Login = () => {
+    const { setToken } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const isExpired = new URLSearchParams(location.search).get("expired");
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await api.post("/auth/login", { email, password });
+            setToken(res.data.token);
+            navigate("/");
+        } catch (err) {
+            setError("Invalid credentials. Try again.");
+        }
+    };
+
+    return (
+        <div style={containerStyle}>
+            <h1 style={{ fontSize: '3rem', marginBottom: '30px' }}>Store Inventory</h1>
+
+            {/* Layout Wrapper to keep Alert and Form together */}
+            <div style={{ width: '100%', maxWidth: '400px' }}>
+
+                {/* SESSION EXPIRED ALERT - Now stacks correctly */}
+                {isExpired && (
+                    <div style={alertStyle}>
+                        ⚠️ Your session has expired. Please log in again.
+                    </div>
+                )}
+
+                {/* LOGIN FORM */}
+                <form onSubmit={handleLogin} className="admin-card" style={{ textAlign: 'left' }}>
+                    {error && <p style={{ color: '#ef4444', textAlign: 'center', fontWeight: 'bold' }}>{error}</p>}
+
+                    <div style={inputGroupStyle}>
+                        <label style={labelStyle}>Username</label>
+                        <input
+                            placeholder="admin or user"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            style={inputStyle}
+                        />
+                    </div>
+
+                    <div style={inputGroupStyle}>
+                        <label style={labelStyle}>Password</label>
+                        <input
+                            type="password"
+                            placeholder="•••••"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            style={inputStyle}
+                        />
+                    </div>
+
+                    <button type="submit" style={buttonStyle}>
+                        LOG IN
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+// --- STYLES ---
+
+const containerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '80vh',
+    padding: '20px'
+};
+
+const alertStyle = {
+    background: '#f59e0b',
+    color: '#000',
+    padding: '15px',
+    borderRadius: '12px',
+    marginBottom: '20px',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+};
+
+const inputGroupStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    marginBottom: '20px'
+};
+
+const labelStyle = {
+    fontSize: '0.8rem',
+    fontWeight: 'bold',
+    color: '#94a3b8',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
+};
+
+const inputStyle = {
+    width: '100%',
+    boxSizing: 'border-box'
+};
+
+const buttonStyle = {
+    width: '100%',
+    padding: '14px',
+    backgroundColor: '#6366f1', // Matching your Book theme color
+    color: 'white',
+    fontSize: '1rem',
+    marginTop: '10px'
+};
+
+export default Login;
+```
+
+--- FILE: frontend/src/pages/Logout.jsx ---
+```
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { useAuth } from "../provider/authProvider";
+
+const Logout = () => {
+    const { setToken } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setToken(null); // Clears state and localStorage
+        navigate("/login", { replace: true });
+    }, [setToken, navigate]);
+
+    return <div style={{textAlign:'center', marginTop:'100px'}}>Logging out...</div>;
+};
+
+export default Logout;
+```
+
+--- FILE: frontend/src/routes/ProtectedRoute.jsx ---
+```
+import { Navigate, Outlet } from "react-router";
+import { useAuth } from "../provider/authProvider";
+export const ProtectedRoute = () => {
+    const { token } = useAuth();
+    // Check if the user is authenticated
+    if (!token) {
+        // If not authenticated, redirect to the login page
+        return <Navigate to="/login" replace />;
+    }
+    // If authenticated, render the child routes (e.g., Home, Inventory)
+    return <Outlet />;
+};
+
+```
+
 --- FILE: frontend/src/Home.jsx ---
 ```
 function Home({ bookCount, magCount, lapCount }) {
     return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>System Overview</h1>
-            <p style={{ color: '#aaa', marginBottom: '40px' }}>Welcome back. Here is the current state of the library.</p>
+        <div style={{ textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3.5rem', marginBottom: '10px' }}>System Overview</h1>
+            <p style={{ color: '#94a3b8', marginBottom: '50px' }}>Current database snapshot.</p>
 
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '20px',
-                maxWidth: '1000px',
-                margin: '0 auto'
-            }}>
-                {/* Stats Cards */}
-                <div style={cardStyle('#3700b3')}>
-                    <h2>{bookCount}</h2>
-                    <p>Total Books</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '25px' }}>
+                <div style={cardStyle('#6366f1')}>
+                    <span style={{fontSize: '3rem'}}>📚</span>
+                    <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{bookCount}</h2>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>BOOKS</p>
                 </div>
 
-                <div style={cardStyle('#018786')}>
-                    <h2>{magCount}</h2>
-                    <p>Total Magazines</p>
+                <div style={cardStyle('#10b981')}>
+                    <span style={{fontSize: '3rem'}}>📰</span>
+                    <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{magCount}</h2>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>MAGAZINES</p>
                 </div>
 
-                <div style={cardStyle('#cf6679')}>
-                    <h2>{lapCount}</h2>
-                    <p>Total Laptops</p>
+                <div style={statCard('#f43f5e')}>
+                    <span style={{fontSize: '3rem'}}>💻</span>
+                    <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{lapCount}</h2>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>LAPTOPS</p>
                 </div>
             </div>
 
-            <div style={{ marginTop: '50px', padding: '30px', backgroundColor: '#1e1e1e', borderRadius: '12px', border: '1px solid #333' }}>
-                <h3>Quick Actions</h3>
-                <p>Use the navigation bar above to manage specific records or register new inventory items into the database.</p>
+            <div className="admin-card" style={{ marginTop: '50px', borderTop: '4px solid #475569' }}>
+                <h3 style={{fontSize: '1.5rem'}}>Administrative Access</h3>
+                <p style={{color: '#94a3b8'}}>All changes are persisted to the H2 Cloud Database. Ensure price and quantity values are non-negative.</p>
             </div>
         </div>
     );
 }
 
 const cardStyle = (color) => ({
-    backgroundColor: '#1e1e1e',
-    padding: '30px',
-    borderRadius: '15px',
-    borderTop: `5px solid ${color}`,
-    boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
-    textAlign: 'center'
+    backgroundColor: '#1e293b',
+    padding: '40px',
+    borderRadius: '24px',
+    borderTop: `8px solid ${color}`,
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)'
+});
+
+const statCard = (color) => ({
+    backgroundColor: '#1e293b',
+    padding: '40px',
+    borderRadius: '24px',
+    borderTop: `8px solid ${color}`,
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)'
 });
 
 export default Home;
-```
-
---- FILE: pom.xml ---
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>csd230</groupId>
-    <artifactId>csd230-lecture-2_11_1-react-in-class-exercise</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>csd230-lecture-2.11.1-react-in-class-exercise</name>
-    <description>csd230-lecture-2.11.1-react-in-class-exercise</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
-    <properties>
-        <java.version>17</java.version>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-h2console</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Mock Data Generator -->
-        <dependency>
-            <groupId>net.datafaker</groupId>
-            <artifactId>datafaker</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.15.0</version>
-                <configuration>
-                    <workingDirectory>frontend</workingDirectory>
-                    <installDirectory>target</installDirectory>
-                </configuration>
-                <executions>
-                    <!-- 1. Install Node and NPM locally for the project -->
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v20.10.0</nodeVersion>
-                            <npmVersion>10.2.3</npmVersion>
-                        </configuration>
-                    </execution>
-
-                    <!-- 2. Run 'npm install' -->
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-
-                    <!-- 3. Run 'npm run build' -->
-                    <execution>
-                        <id>npm run build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-</project>
-
 ```
 
 --- FILE: .gitignore ---
@@ -4025,6 +4670,22 @@ class ApplicationTests {
 
 ```
 
+--- FILE: src/main/resources/application-h2.properties ---
+```
+# H2 Database Config
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=admin
+spring.datasource.password=admin
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+# Show SQL logs (helpful for debugging the tutorial)
+spring.jpa.show-sql=true
+# Ensure tables are created based on your Entity classes
+spring.jpa.hibernate.ddl-auto=create-drop
+
+```
+
 --- FILE: src/main/resources/static/index.html ---
 ```
 <!doctype html>
@@ -4034,8 +4695,8 @@ class ApplicationTests {
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend</title>
-    <script type="module" crossorigin src="/assets/index-Bv_A5Far.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-COcDBgFa.css">
+    <script type="module" crossorigin src="/assets/index-B_6Wd9Eg.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CJnb6Daj.css">
   </head>
   <body>
     <div id="root"></div>
@@ -4051,22 +4712,18 @@ class ApplicationTests {
 
 --- FILE: src/main/resources/application.properties ---
 ```
-spring.application.name=csd230-lecture-2.11.1-react-in-class-exercise
+spring.application.name=Bookstore
 
-# H2 Database Config
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=admin
-spring.datasource.password=admin
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.profiles.active=${SPRING_PROFILES_ACTIVE:h2}
 
-# Show SQL logs (helpful for debugging the tutorial)
-spring.jpa.show-sql=true
-# Ensure tables are created based on your Entity classes
-spring.jpa.hibernate.ddl-auto=create-drop
+server.port=${PORT:8080}
 
-# Enable H2 Console (at http://localhost:8080/h2-console)
 spring.h2.console.enabled=true
+
+spring.h2.console.settings.web-allow-others=true
+
+
+
 ```
 
 --- FILE: src/main/java/csd230/Application.java ---
@@ -4090,29 +4747,418 @@ public class Application {
 --- FILE: src/main/java/csd230/seeder/DataSeeder.java ---
 ```
 package csd230.seeder;
+
+import com.github.javafaker.Faker;
 import csd230.entities.*;
 import csd230.repositories.*;
-import net.datafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder; // NEW
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
-    private final BookRepository bookRepo;
-    private final MagazineRepository magRepo;
+
+    private final BookRepository bookRepository;
+    private final MagazineRepository magazineRepository;
+    private final LaptopRepository laptopRepository;
+    private final UserEntityRepository userRepository; // NEW
+    private final PasswordEncoder passwordEncoder; // NEW
     private final Faker faker = new Faker();
 
-    public DataSeeder(BookRepository br, MagazineRepository mr) { this.bookRepo = br; this.magRepo = mr; }
+    // Updated constructor to include User items
+    public DataSeeder(BookRepository br, MagazineRepository mr, LaptopRepository lr,
+                      UserEntityRepository ur, PasswordEncoder pe) {
+        this.bookRepository = br;
+        this.magazineRepository = mr;
+        this.laptopRepository = lr;
+        this.userRepository = ur;
+        this.passwordEncoder = pe;
+    }
 
     @Override
     public void run(String... args) {
-        if (bookRepo.count() == 0) {
-            for (int i = 0; i < 5; i++) {
-                bookRepo.save(new BookEntity(faker.book().title(), faker.number().randomDouble(2, 10, 50), 10, faker.book().author()));
-                magRepo.save(new MagazineEntity(faker.book().publisher() + " Weekly", 9.99, 10, 100, LocalDateTime.now()));
-            }
+
+        if (bookRepository.count() == 0) {
+            seedBooks(10);
         }
+
+        if (magazineRepository.count() == 0) {
+            seedMagazines(7);
+        }
+
+        if (laptopRepository.count() == 0) {
+            seedLaptops(5);
+        }
+
+        if (userRepository.count() == 0) {
+            System.out.println("🌱 Seeding Users...");
+
+            UserEntity admin = new UserEntity("admin", passwordEncoder.encode("admin"), "ADMIN");
+            userRepository.save(admin);
+
+            UserEntity user = new UserEntity("user", passwordEncoder.encode("user"), "USER");
+            userRepository.save(user);
+
+            System.out.println("✅ Default users created");
+        }
+    }
+
+    private void seedBooks(int count) {
+        for (int i = 0; i < count; i++) {
+            BookEntity book = new BookEntity(faker.book().title(), faker.number().randomDouble(2, 15, 60), 10, faker.book().author());
+            bookRepository.save(book);
+        }
+        System.out.println(" - Created " + count + " Books");
+    }
+
+    private void seedMagazines(int count) {
+        for (int i = 0; i < count; i++) {
+            LocalDateTime issueDate = faker.date().past(60, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            MagazineEntity mag = new MagazineEntity(faker.book().publisher() + " Weekly", faker.number().randomDouble(2, 5, 12), 15, 100, issueDate);
+            magazineRepository.save(mag);
+        }
+        System.out.println(" - Created " + count + " Magazines");
+    }
+
+    private void seedLaptops(int count) {
+        String[] brands = {"Apple", "Dell", "HP", "Lenovo", "Asus"};
+        for (int i = 0; i < count; i++) {
+            LaptopEntity laptop = new LaptopEntity(brands[faker.number().numberBetween(0, 4)], faker.number().randomDouble(2, 800, 2500), faker.options().option(8, 16, 32));
+            laptopRepository.save(laptop);
+        }
+        System.out.println(" - Created " + count + " Laptops");
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/config/WebSecurityConfig.java ---
+```
+package csd230.config;
+
+
+import csd230.auth.JwtAuthorizationFilter;
+import csd230.services.CustomUserDetailsService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
+    public WebSecurityConfig(CustomUserDetailsService userDetailsService, JwtAuthorizationFilter jwtAuthorizationFilter) {
+        this.userDetailsService = userDetailsService;
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                // 1. Disable CSRF (we use JWT, so we are stateless)
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/rest/**"))
+
+                // 2. Set Session Management to STATELESS
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .authorizeHttpRequests((requests) -> requests
+                        // A. PUBLIC STATIC ASSETS: Allow React to load
+                        .requestMatchers("/", "/index.html", "/assets/**", "/vite.svg", "/favicon.ico").permitAll()
+
+                        // B. PUBLIC AUTH ENDPOINTS: Allow login requests
+                        .requestMatchers("/api/rest/auth/**").permitAll()
+
+                        // C. PUBLIC DEBUG TOOLS: Swagger and H2 Console
+                        .requestMatchers("/h2-console/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        // D. SECURE THE REST API: Requires ROLE_USER or ROLE_ADMIN (via JWT)
+                        .requestMatchers("/api/rest/**").hasAnyRole("USER", "ADMIN")
+
+                        // E. SECURE MVC ADMIN PAGES: (Only if you still use Thymeleaf occasionally)
+                        .requestMatchers("/books/add", "/books/edit/**", "/books/delete/**").hasRole("ADMIN")
+
+                        // F. Everything else (like the SPA forwarding) needs to be accessible
+                        .anyRequest().permitAll()
+                )
+
+                // 3. EXCEPTION HANDLING: Return 401 for API errors instead of redirecting to a login page
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if (request.getRequestURI().startsWith("/api/rest/")) {
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            } else {
+                                // For everything else, the React app will handle navigation
+                                response.setStatus(HttpServletResponse.SC_OK);
+                            }
+                        })
+                )
+
+                // 4. ADD JWT FILTER: Runs before the standard authentication filter
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // Required for H2 Console to work in a browser frame
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        // FIX: Pass userDetailsService to the constructor
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+}
+
+
+
+
+```
+
+--- FILE: src/main/java/csd230/auth/JwtUtil.java ---
+```
+package csd230.auth;
+
+import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+@Component
+public class JwtUtil {
+    private final String secret_key = "mysecretkey";
+
+    /**
+     * TEST SETTING:
+     * Set this to 10 for expiration testing.
+     * Set to 3600 for 1-hour session in a production-like environment.
+     */
+    private long accessTokenValidity = 3600;
+
+    private final JwtParser jwtParser;
+    private final String TOKEN_HEADER = "Authorization";
+    private final String TOKEN_PREFIX = "Bearer ";
+
+    public JwtUtil() {
+        this.jwtParser = Jwts.parser().setSigningKey(secret_key);
+    }
+
+    /**
+     * Creates a JWT token for the authenticated user.
+     * Roles are extracted from Spring Security authorities and saved in a 'roles' claim.
+     */
+    public String createToken(String email, Collection<? extends GrantedAuthority> authorities) {
+        Claims claims = Jwts.claims().setSubject(email);
+
+        // Convert GrantedAuthority collection to a List of Strings (e.g., ["ROLE_ADMIN"])
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        claims.put("roles", roles);
+
+        Date tokenCreateTime = new Date();
+
+        // Calculation using SECONDS so that the variable 'accessTokenValidity' is easy to test
+        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.SECONDS.toMillis(accessTokenValidity));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setExpiration(tokenValidity)
+                .signWith(SignatureAlgorithm.HS256, secret_key)
+                .compact();
+    }
+
+    /**
+     * Parses the JWT string to extract the payload (claims).
+     */
+    private Claims parseJwtClaims(String token) {
+        return jwtParser.parseClaimsJws(token).getBody();
+    }
+
+    /**
+     * Resolves the token from the HTTP Request and parses the claims.
+     * Specifically catches ExpiredJwtException to handle session timeout.
+     */
+    public Claims resolveClaims(HttpServletRequest req) {
+        try {
+            String token = resolveToken(req);
+            if (token != null) {
+                return parseJwtClaims(token);
+            }
+            return null;
+        } catch (ExpiredJwtException ex) {
+            req.setAttribute("expired", ex.getMessage());
+            throw ex; // This is caught by the JwtAuthorizationFilter
+        } catch (Exception ex) {
+            req.setAttribute("invalid", ex.getMessage());
+            throw ex;
+        }
+    }
+
+    /**
+     * Extracts the token string from the "Authorization: Bearer <token>" header.
+     */
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(TOKEN_HEADER);
+        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
+            return bearerToken.substring(TOKEN_PREFIX.length());
+        }
+        return null;
+    }
+
+    /**
+     * Validates that the token's expiration date is still in the future.
+     */
+    public boolean validateClaims(Claims claims) throws AuthenticationException {
+        try {
+            return claims.getExpiration().after(new Date());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public String getEmail(Claims claims) {
+        return claims.getSubject();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> getRoles(Claims claims) {
+        return (List<String>) claims.get("roles");
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/auth/JwtAuthorizationFilter.java ---
+```
+package csd230.auth;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Component
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
+    private final JwtUtil jwtUtil;
+    private final ObjectMapper mapper;
+
+    public JwtAuthorizationFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+        this.mapper = new ObjectMapper();
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        try {
+            // 1. Extract the token from the Authorization header
+            String accessToken = jwtUtil.resolveToken(request);
+
+            // 2. If no token is provided, continue to the next filter
+            // (Allows permitAll routes to work or falls back to Form Login)
+            if (accessToken == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 3. Resolve and Validate the JWT Claims
+            // If the token is expired, this method throws an ExpiredJwtException
+            Claims claims = jwtUtil.resolveClaims(request);
+
+            if (claims != null && jwtUtil.validateClaims(claims)) {
+                String email = claims.getSubject();
+
+                // 4. Extract Roles from the JWT Claims
+                // This converts the JSON list ["ROLE_ADMIN"] into Spring Security Authorities
+                List<String> roles = (List<String>) claims.get("roles");
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+                if (roles != null) {
+                    authorities = roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+                }
+
+                // 5. Create an Authentication object and set it in the Security Context
+                // This tells Spring Boot: "This user is authenticated and has these roles"
+                Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(email, "", authorities);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
+        } catch (Exception e) {
+            // 6. ERROR HANDLING: This is critical for the React Interceptor
+            // If the token is expired or invalid, we return a JSON error response
+            Map<String, Object> errorDetails = new HashMap<>();
+            errorDetails.put("message", "Authentication Error");
+            errorDetails.put("details", e.getMessage());
+
+            // FIX: Explicitly set status to 401 Unauthorized
+            // so the Axios interceptor catches it.
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+            mapper.writeValue(response.getWriter(), errorDetails);
+
+            // Return immediately to stop the rest of the filter chain
+            return;
+        }
+
+        // Continue the filter chain
+        filterChain.doFilter(request, response);
     }
 }
 ```
@@ -4145,6 +5191,23 @@ public interface LaptopRepository extends JpaRepository<LaptopEntity, Long> {
 }
 ```
 
+--- FILE: src/main/java/csd230/repositories/BookEntityRepository.java ---
+```
+package csd230.repositories;
+
+import csd230.entities.BookEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookEntityRepository extends JpaRepository<BookEntity, Long> {
+
+    // We can now add book-specific queries here if needed, e.g.:
+
+    // List<BookEntity> findByAuthor(String author);
+
+}
+
+```
+
 --- FILE: src/main/java/csd230/repositories/BookRepository.java ---
 ```
 package csd230.repositories;
@@ -4160,44 +5223,361 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
 ```
 
---- FILE: src/main/java/csd230/controllers/MagazineController.java ---
+--- FILE: src/main/java/csd230/repositories/ProductEntityRepository.java ---
+```
+package csd230.repositories;
+
+import csd230.entities.ProductEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductEntityRepository extends JpaRepository<ProductEntity, Long> {
+}
+```
+
+--- FILE: src/main/java/csd230/repositories/UserEntityRepository.java ---
+```
+package csd230.repositories;
+import csd230.entities.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
+    UserEntity findByUsername(String username);
+}
+
+
+
+```
+
+--- FILE: src/main/java/csd230/repositories/CartEntityRepository.java ---
+```
+package csd230.repositories;
+
+import csd230.entities.CartEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CartEntityRepository extends JpaRepository<CartEntity, Long> {
+}
+```
+
+--- FILE: src/main/java/csd230/repositories/MagazineEntityRepository.java ---
+```
+package csd230.repositories;
+
+import csd230.entities.MagazineEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface MagazineEntityRepository extends JpaRepository<MagazineEntity, Long> {
+}
+```
+
+--- FILE: src/main/java/csd230/model/response/ErrorRes.java ---
+```
+package csd230.model.response;
+import org.springframework.http.HttpStatus;
+
+
+public class ErrorRes {
+    HttpStatus httpStatus;
+    String message;
+
+
+    public ErrorRes(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
+
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+
+
+    public void setHttpStatus(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+
+    public String getMessage() {
+        return message;
+    }
+
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+}
+
+
+```
+
+--- FILE: src/main/java/csd230/model/response/LoginRes.java ---
+```
+package csd230.model.response;
+public class LoginRes {
+    private String email;
+    private String token;
+
+
+    public LoginRes(String email, String token) {
+        this.email = email;
+        this.token = token;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public String getToken() {
+        return token;
+    }
+
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+}
+
+
+```
+
+--- FILE: src/main/java/csd230/model/request/LoginReq.java ---
+```
+package csd230.model.request;
+
+
+public class LoginReq {
+    private String email;
+    private String password;
+
+
+    public LoginReq(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+
+
+
+
+```
+
+--- FILE: src/main/java/csd230/controllers/BookNotFoundException.java ---
 ```
 package csd230.controllers;
-import csd230.entities.MagazineEntity;
-import csd230.repositories.MagazineRepository;
-import org.springframework.http.ResponseEntity;
+
+public class BookNotFoundException extends RuntimeException {
+    public BookNotFoundException(Long id) {
+        super("Could not find book with ID: " + id);
+    }
+}
+
+
+```
+
+--- FILE: src/main/java/csd230/controllers/BookNotFoundAdvice.java ---
+```
+package csd230.controllers;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+class BookNotFoundAdvice {
+
+    @ExceptionHandler(BookNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    String bookNotFoundHandler(BookNotFoundException ex) {
+        return ex.getMessage();
+    }
+}
+
+
+```
+
+--- FILE: src/main/java/csd230/controllers/CartRestController.java ---
+```
+package csd230.controllers;
+
+import csd230.entities.CartEntity;
+import csd230.entities.ProductEntity;
+import csd230.repositories.CartEntityRepository;
+import csd230.repositories.ProductEntityRepository;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional; // Import this
 
 @RestController
-@RequestMapping("/api/magazines")
-@CrossOrigin(origins = "http://localhost:5173")
-public class MagazineController {
-    private final MagazineRepository magazineRepository;
+@RequestMapping("/api/rest/cart")
+@CrossOrigin(origins = "*")
+public class CartRestController {
+    private final CartEntityRepository cartRepository;
+    private final ProductEntityRepository productRepository;
 
-    public MagazineController(MagazineRepository magazineRepository) {
-        this.magazineRepository = magazineRepository;
+    public CartRestController(CartEntityRepository cartRepository, ProductEntityRepository productRepository) {
+        this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
     }
 
-    @GetMapping public List<MagazineEntity> getAll() { return magazineRepository.findAll(); }
-
-    @PostMapping public MagazineEntity create(@RequestBody MagazineEntity mag) { return magazineRepository.save(mag); }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<MagazineEntity> update(@PathVariable Long id, @RequestBody MagazineEntity details) {
-        return magazineRepository.findById(id).map(mag -> {
-            mag.setTitle(details.getTitle());
-            mag.setPrice(details.getPrice());
-            mag.setOrderQty(details.getOrderQty());
-            mag.setCurrentIssue(details.getCurrentIssue());
-            return ResponseEntity.ok(magazineRepository.save(mag));
-        }).orElse(ResponseEntity.notFound().build());
+    private CartEntity getDefaultCart() {
+        // Look for the first cart, or create one if none exist
+        return cartRepository.findAll().stream().findFirst().orElseGet(() -> {
+            CartEntity newCart = new CartEntity();
+            // REMOVED: newCart.setId(1L) - Let the database generate the ID
+            return cartRepository.save(newCart);
+        });
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        magazineRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public CartEntity getCart() {
+        return getDefaultCart();
+    }
+
+    @PostMapping("/add/{productId}")
+    @Transactional // Ensure the join table update is committed
+    public CartEntity addToCart(@PathVariable Long productId) {
+        CartEntity cart = getDefaultCart();
+        ProductEntity product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        cart.addProduct(product);
+        return cartRepository.save(cart);
+    }
+
+    @DeleteMapping("/remove/{productId}")
+    @Transactional
+    public CartEntity removeFromCart(@PathVariable Long productId) {
+        CartEntity cart = getDefaultCart();
+        ProductEntity product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        cart.getProducts().remove(product);
+        return cartRepository.save(cart);
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/controllers/CartController.java ---
+```
+package csd230.controllers;
+import csd230.entities.BookEntity;
+import csd230.entities.CartEntity;
+import csd230.repositories.BookEntityRepository;
+import csd230.repositories.CartEntityRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+    @Autowired
+    private CartEntityRepository cartRepository;
+    @Autowired
+    private BookEntityRepository bookRepository;
+    // 1. View the contents of the cart
+    @GetMapping
+    public String viewCart(Model model) {
+        // HARDCODED ID: In a real app, this comes from the Session or SecurityContext
+        Long defaultCartId = 1L;
+
+        // Find cart with ID 1, or create a temporary empty one if not found
+        CartEntity cart = cartRepository.findById(defaultCartId)
+                .orElseGet(() -> {
+                    CartEntity newCart = new CartEntity();
+                    newCart.setId(defaultCartId);
+                    return cartRepository.save(newCart); // Save it so it exists
+                });
+        model.addAttribute("cart", cart);
+        return "cartDetails";
+    }
+    // 2. Add a specific book to the cart
+//    @GetMapping("/add/{bookId}")
+//    public String addToCart(@PathVariable Long bookId) {
+//        Long defaultCartId = 1L;
+//        CartEntity cart = cartRepository.findById(defaultCartId).orElse(null);
+//        BookEntity book = bookRepository.findById(bookId).orElse(null);
+//        if (cart != null && book != null) {
+//            cart.addProduct(book); // Uses the helper method in CartEntity
+//            cartRepository.save(cart); // Updates the Join Table
+//        }
+//        return "redirect:/books"; // Send them back to the shopping list
+//    }
+    @GetMapping("/add/{bookId}")
+    public String addToCart(@PathVariable Long bookId) {
+        // Find the first available cart
+        CartEntity cart = cartRepository.findAll().stream().findFirst().orElse(null);
+        BookEntity book = bookRepository.findById(bookId).orElse(null);
+
+        if (cart != null && book != null) {
+            cart.addProduct(book);
+            cartRepository.save(cart);
+        }
+        return "redirect:/books";
+    }
+    // 3. Remove item from cart
+    @GetMapping("/remove/{bookId}")
+    public String removeFromCart(@PathVariable Long bookId) {
+        Long defaultCartId = 1L;
+        CartEntity cart = cartRepository.findById(defaultCartId).orElse(null);
+        BookEntity book = bookRepository.findById(bookId).orElse(null);
+        if(cart != null && book != null) {
+            cart.getProducts().remove(book);
+            cartRepository.save(cart);
+        }
+        return "redirect:/cart";
+    }
+}
+
+
+```
+
+--- FILE: src/main/java/csd230/controllers/SpaController.java ---
+```
+package csd230.controllers;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class SpaController {
+
+    // Match any path that doesn't contain a dot (to avoid matching .js, .css, etc)
+    // and isn't an API call.
+    @RequestMapping(value = "{path:[^\\.]*}")
+    public String redirect() {
+        // Forward to the React index.html
+        return "forward:/index.html";
     }
 }
 ```
@@ -4213,7 +5593,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/laptops")
+@RequestMapping("/api/rest/laptops")
 @CrossOrigin(origins = "http://localhost:5173")
 public class LaptopController {
 
@@ -4258,103 +5638,899 @@ public class LaptopController {
 }
 ```
 
---- FILE: src/main/java/csd230/controllers/BookController.java ---
+--- FILE: src/main/java/csd230/controllers/AuthController.java ---
+```
+package csd230.controllers;
+
+import csd230.auth.JwtUtil;
+import csd230.model.request.LoginReq;
+import csd230.model.response.ErrorRes;
+import csd230.model.response.LoginRes;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/rest/auth")
+public class AuthController {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginReq loginReq)  {
+        try {
+            // This line checks the DB using your CustomUserDetailsService
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword())
+            );
+
+            String email = authentication.getName();
+            // Pass the roles from the DB into the token
+            String token = jwtUtil.createToken(email, authentication.getAuthorities());
+
+            return ResponseEntity.ok(new LoginRes(email, token));
+
+        } catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorRes(HttpStatus.BAD_REQUEST, "Invalid username or password"));
+        }
+    }
+}
+
+
+
+
+```
+
+--- FILE: src/main/java/csd230/controllers/MagazineRestController.java ---
+```
+package csd230.controllers;
+
+import csd230.entities.MagazineEntity;
+import csd230.repositories.MagazineEntityRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Tag(name = "Magazine REST API", description = "JSON API for managing magazines")
+@RestController
+@RequestMapping("/api/rest/magazines")
+@CrossOrigin(origins = "*") // Allows your Vite React app to access this
+public class MagazineRestController {
+
+    private final MagazineEntityRepository magazineRepository;
+
+    public MagazineRestController(MagazineEntityRepository magazineRepository) {
+        this.magazineRepository = magazineRepository;
+    }
+
+    @Operation(summary = "Get all magazines as JSON")
+    @GetMapping
+    public List<MagazineEntity> all() {
+        return magazineRepository.findAll();
+    }
+
+    @Operation(summary = "Get a single magazine by ID")
+    @GetMapping("/{id}")
+    public MagazineEntity getMagazine(@PathVariable Long id) {
+        return magazineRepository.findById(id).orElseThrow();
+    }
+
+    @Operation(summary = "Create a new magazine")
+    @PostMapping
+    public MagazineEntity newMagazine(@RequestBody MagazineEntity newMagazine) {
+        return magazineRepository.save(newMagazine);
+    }
+
+    @Operation(summary = "Update or Replace a magazine")
+    @PutMapping("/{id}")
+    public ResponseEntity<MagazineEntity> replaceMagazine(@RequestBody MagazineEntity newMag, @PathVariable Long id) {
+        return magazineRepository.findById(id)
+                .map(mag -> {
+                    mag.setTitle(newMag.getTitle());
+                    mag.setPrice(newMag.getPrice()); // This updates the price!
+                    mag.setOrderQty(newMag.getOrderQty());
+                    mag.setCopies(newMag.getCopies());
+                    mag.setCurrentIssue(newMag.getCurrentIssue());
+                    return ResponseEntity.ok(magazineRepository.save(mag));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Delete a magazine")
+    @DeleteMapping("/{id}")
+    public void deleteMagazine(@PathVariable Long id) {
+        magazineRepository.deleteById(id);
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/controllers/BookRestController.java ---
 ```
 package csd230.controllers;
 
 import csd230.entities.BookEntity;
-import csd230.repositories.BookRepository;
+import csd230.repositories.BookEntityRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-        import java.util.List;
+import java.util.List;
 
+@Tag(name = "Book REST API", description = "JSON API for managing books")
 @RestController
-@RequestMapping("/api/books")
-@CrossOrigin(origins = "http://localhost:5173") // Allow Vite React App
-public class BookController {
+@RequestMapping("/api/rest/books")
+@CrossOrigin(origins = "*")
+public class BookRestController {
+    private final BookEntityRepository bookRepository;
 
-    private final BookRepository bookRepository;
-
-    public BookController(BookRepository bookRepository) {
+    public BookRestController(BookEntityRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
-    // GET all books
+    @Operation(summary = "Get all books as JSON")
     @GetMapping
-    public List<BookEntity> getAllBooks() {
+    public List<BookEntity> all() {
         return bookRepository.findAll();
     }
 
-    // GET single book
+    @Operation(summary = "Get a single book by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<BookEntity> getBookById(@PathVariable Long id) {
+    public BookEntity getBook(@PathVariable Long id) {
         return bookRepository.findById(id)
-                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    @Operation(summary = "Create a new book")
+    @PostMapping
+    public BookEntity newBook(@RequestBody BookEntity newBook) {
+        return bookRepository.save(newBook);
+    }
+
+    @Operation(summary = "Update or Replace a book")
+    @PutMapping("/{id}")
+    public ResponseEntity<BookEntity> replaceBook(@RequestBody BookEntity newBook, @PathVariable Long id) {
+        return bookRepository.findById(id)
+                .map(book -> {
+                    book.setTitle(newBook.getTitle());
+                    book.setAuthor(newBook.getAuthor());
+                    book.setPrice(newBook.getPrice()); // This updates the price!
+                    book.setCopies(newBook.getCopies());
+                    return ResponseEntity.ok(bookRepository.save(book));
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST create book
-    @PostMapping
-    public BookEntity createBook(@RequestBody BookEntity book) {
-        return bookRepository.save(book);
-    }
-
-    // PUT update book
-    @PutMapping("/{id}")
-    public ResponseEntity<BookEntity> updateBook(@PathVariable Long id, @RequestBody BookEntity bookDetails) {
-        return bookRepository.findById(id).map(book -> {
-            book.setTitle(bookDetails.getTitle());
-            book.setAuthor(bookDetails.getAuthor());
-            book.setPrice(bookDetails.getPrice());
-            book.setCopies(bookDetails.getCopies());
-            return ResponseEntity.ok(bookRepository.save(book));
-        }).orElse(ResponseEntity.notFound().build());
-    }
-
-    // DELETE book
+    @Operation(summary = "Delete a book")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    public void deleteBook(@PathVariable Long id) {
+        bookRepository.deleteById(id);
     }
 }
+
+
+```
+
+--- FILE: src/main/java/csd230/controllers/LoginController.java ---
+```
+package csd230.controllers;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+@Controller
+public class LoginController {
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/Product.java ---
+```
+package csd230.pojos;
+
+import java.io.Serializable;
+
+// Marked abstract because it implements SaleableItem but doesn't implement getPrice()
+// (Price is defined in children: Ticket and Publication)
+public abstract class Product extends Editable implements SaleableItem, Serializable {
+    private String productId;
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    private Cart cart;
+
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/Publication.java ---
+```
+package csd230.pojos;
+
+import java.util.Objects;
+
+public abstract class Publication extends Product {
+    private String title = "";
+    private Double price = 0.0;
+    private int copies = 0;
+
+    public Publication() {
+    }
+
+    public Publication(String title, double price, int copies) {
+        this.title = title;
+        this.price = price;
+        this.copies = copies;
+    }
+
+    @Override
+    public void initialize() {
+        System.out.println("Enter Title:");
+        this.title = getInput("Available Title"); // "Available Title" is default if empty
+    }
+
+    // Helper used by subclasses during initialize
+    protected void initPriceCopies() {
+        System.out.println("Enter copies:");
+        this.copies = getInput(0);
+
+        System.out.println("Enter price:");
+        this.price = getInput(0.0);
+    }
+
+    @Override
+    public void edit() {
+        System.out.println("Edit Title [" + this.title + "]:");
+        this.title = getInput(this.title);
+
+        System.out.println("Edit Price [" + this.price + "]:");
+        this.price = getInput(this.price);
+
+        System.out.println("Edit Copies [" + this.copies + "]:");
+        this.copies = getInput(this.copies);
+    }
+
+    @Override
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getCopies() {
+        return copies;
+    }
+
+    public void setCopies(int copies) {
+        this.copies = copies;
+    }
+
+    @Override
+    public String toString() {
+        return "Publication{title='" + title + "', price=" + price + ", copies=" + copies + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Publication)) return false;
+        Publication that = (Publication) o;
+        return Double.compare(that.price, price) == 0 &&
+                copies == that.copies &&
+                Objects.equals(title, that.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, price, copies);
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/Book.java ---
+```
+package csd230.pojos;
+
+import java.util.Objects;
+
+public class Book extends Publication {
+    private String author = "";
+
+    public Book() {
+        super();
+    }
+
+    public Book(String author) {
+        this.author = author;
+    }
+
+    public Book(String author, String title, double price, int copies) {
+        super(title, price, copies);
+        this.author = author;
+    }
+
+    @Override
+    public void initialize() {
+        // 1. Initialize Parent (Title)
+        super.initialize();
+
+        // 2. Initialize Self (Author)
+        System.out.println("Enter Author:");
+        this.author = getInput("Unknown Author");
+
+        // 3. Initialize Parent (Copies/Price)
+        super.initPriceCopies();
+    }
+
+    @Override
+    public void edit() {
+        // 1. Edit Parent fields (Title, Price, Copies)
+        super.edit();
+
+        // 2. Edit Self fields
+        System.out.println("Edit Author [" + this.author + "]:");
+        this.author = getInput(this.author);
+    }
+
+    @Override
+    public void sellItem() {
+        System.out.println("Selling Book: " + getTitle() + " by " + author);
+        setCopies(getCopies() - 1);
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{author='" + author + "', " + super.toString() + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        if (!super.equals(o)) return false;
+        Book book = (Book) o;
+        return Objects.equals(author, book.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), author);
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/Ticket.java ---
+```
+package csd230.pojos;
+
+public class Ticket extends Product {
+    public String description = "";
+    public Double price = 0.0;
+
+    @Override
+    public void sellItem() {
+        System.out.println("Selling Ticket: " + description + " for " + price);
+    }
+
+    @Override
+    public Double getPrice() {
+        return price;
+    }
+
+    @Override
+    public void initialize() {
+        System.out.println("Enter Description:");
+        this.description = getInput("Ticket");
+
+        System.out.println("Enter Price:");
+        this.price = getInput(0.0);
+    }
+
+    @Override
+    public void edit() {
+        System.out.println("Edit Description [" + this.description + "]:");
+        this.description = getInput(this.description);
+
+        System.out.println("Edit Price [" + this.price + "]:");
+        this.price = getInput(this.price);
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{desc='" + description + "', price=" + price + "}";
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/Editable.java ---
+```
+package csd230.pojos;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Scanner;
+
+/**
+ * @author fcarella
+ */
+
+
+public abstract class Editable implements Serializable, SaleableItem {
+//    private Long id;
+
+
+    public Scanner input = new Scanner(System.in);
+
+    public abstract void edit();
+    public abstract void initialize();
+    // setInput, setOutput are used when unit testing
+    // see https://stackoverflow.com/questions/1647907/junit-how-to-simulate-system-in-testing
+    public void setSystemInput(ByteArrayInputStream testIn){
+        System.setIn(testIn);
+        input=new Scanner(System.in);
+    }
+    public void setSystemOutput(ByteArrayOutputStream testOut){
+        System.setOut(new PrintStream(testOut));
+    }
+
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
+
+
+    public String getInput(String s) {
+        String ss = input.nextLine();
+        if (ss.trim().isEmpty()) {
+            return s;
+        }
+        Scanner in2 = new Scanner(ss);
+        return in2.nextLine();
+    }
+
+    public int getInput(int i) {
+        String s = input.nextLine();
+        if (s.trim().isEmpty()) {
+            return i;
+        }
+        Scanner in2 = new Scanner(s);
+        return in2.nextInt();
+    }
+
+    public double getInput(double i) {
+        String s = input.nextLine();
+        if (s.trim().isEmpty()) {
+            return i;
+        }
+        Scanner in2 = new Scanner(s);
+        return in2.nextDouble();
+    }
+    public boolean getInput(boolean b) {
+        String s = input.nextLine();
+        if (s.trim().isEmpty()) {
+            return b;
+        }
+        Scanner in2 = new Scanner(s);
+        return in2.nextBoolean();
+    }
+
+    public Date getInput(Date date) {
+        String s = input.nextLine();
+        if (s.trim().isEmpty()) {
+            return date;
+        }
+        Scanner in2 = new Scanner(s);
+//        String dateInString = "7-Jun-2013";
+        String dateInString = in2.nextLine();
+        // see https://www.baeldung.com/java-string-to-date
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        Date d;
+        try {
+            d = formatter.parse(dateInString);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return d;
+    }
+    public LocalDate getInput(LocalDate date) {
+        String s = input.nextLine();
+        if (s.trim().isEmpty()) {
+            return date;
+        }
+        Scanner in2 = new Scanner(s);
+//        String dateInString = "7-Jun-2013";
+        String dateInString = in2.nextLine();
+        // see https://www.baeldung.com/java-string-to-date
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        LocalDate d;
+        try {
+            d = LocalDate.parse(s, DateTimeFormatter.ofPattern("dd-MMM-yyyy"));
+        } catch (DateTimeParseException e) {
+            throw e;
+        }
+        return d;
+    }
+
+    @Override
+    public String toString() {
+        return "Editable{" +
+//                "id=" + id +
+               '}';
+    }
+}
+```
+
+--- FILE: src/main/java/csd230/pojos/DiscMag.java ---
+```
+package csd230.pojos;
+
+import java.util.Date;
+
+public class DiscMag extends Magazine {
+    private boolean hasDisc;
+
+    public DiscMag() {
+    }
+
+    public DiscMag(boolean hasDisc, int orderQty, Date currentIssue, String title, double price, int copies) {
+        super(orderQty, currentIssue, title, price, copies);
+        this.hasDisc = hasDisc;
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize(); // Title, Qty, Date, Copies, Price
+
+        System.out.println("Has Disc? (true/false):");
+        this.hasDisc = getInput(false);
+    }
+
+    @Override
+    public void edit() {
+        super.edit(); // Title, Price, Copies, OrderQty, Date
+
+        System.out.println("Edit Has Disc [" + this.hasDisc + "]:");
+        this.hasDisc = getInput(this.hasDisc);
+    }
+
+    @Override
+    public void sellItem() {
+        System.out.println("Selling Disc Magazine (Disc: " + hasDisc + ")");
+        setCopies(getCopies() - 1);
+    }
+
+    public boolean isHasDisc() { return hasDisc; }
+    public void setHasDisc(boolean h) { this.hasDisc = h; }
+
+    @Override
+    public String toString() {
+        return "DiscMag{hasDisc=" + hasDisc + ", " + super.toString() + "}";
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/Cart.java ---
+```
+package csd230.pojos;
+
+import csd230.entities.CartEntity;
+
+import java.util.List;
+import java.util.Objects;
+/**
+ * DTO for {@link csd230.bookstore.entities.CartEntity}
+ */
+/**
+ * DTO for {@link CartEntity}
+ */
+public class Cart {
+    private List<Product> items;
+
+    public Cart() {
+    }
+
+    public Cart(List<Product> items) {
+        this.items = items;
+    }
+
+    public void addItem(Product item) {
+        items.add(item);
+    }
+
+    public List<Product> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Product> items) {
+        this.items = items;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cart cart)) return false;
+        return Objects.equals(getItems(), cart.getItems());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getItems());
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "items=" + items +
+                '}';
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/SaleableItem.java ---
+```
+package csd230.pojos;
+
+public interface SaleableItem {
+    void sellItem();
+    Double getPrice();
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/CashTill.java ---
+```
+package csd230.pojos;
+
+public class CashTill {
+    private double runningTotal;
+
+    public CashTill() {
+        this.runningTotal = 0.0;
+    }
+
+    public void showTotal() {
+        System.out.println("Current Cash Till Total: $" + runningTotal);
+    }
+
+    public void sellItem(SaleableItem item) {
+        item.sellItem();
+        runningTotal += item.getPrice();
+        System.out.println("Added $" + item.getPrice() + " to till.");
+    }
+
+    public double getRunningTotal() {
+        return runningTotal;
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/pojos/Magazine.java ---
+```
+package csd230.pojos;
+
+import java.util.Date;
+
+public class Magazine extends Publication {
+    private int orderQty = 0;
+    private Date currentIssue = new Date();
+
+    public Magazine() {
+    }
+
+    public Magazine(int orderQty, Date currentIssue, String title, double price, int copies) {
+        super(title, price, copies);
+        this.orderQty = orderQty;
+        this.currentIssue = currentIssue;
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize(); // Title
+
+        System.out.println("Enter Order Qty:");
+        this.orderQty = getInput(0);
+
+        System.out.println("Enter Current Issue Date (dd-MMM-yyyy):");
+        this.currentIssue = getInput(new Date());
+
+        super.initPriceCopies(); // Copies, Price
+    }
+
+    @Override
+    public void edit() {
+        super.edit(); // Title, Price, Copies
+
+        System.out.println("Edit Order Qty [" + this.orderQty + "]:");
+        this.orderQty = getInput(this.orderQty);
+
+        System.out.println("Edit Issue Date [" + this.currentIssue + "]:");
+        this.currentIssue = getInput(this.currentIssue);
+    }
+
+    @Override
+    public void sellItem() {
+        System.out.println("Selling Magazine: " + getTitle());
+        setCopies(getCopies() - 1);
+    }
+
+    public int getOrderQty() { return orderQty; }
+    public void setOrderQty(int o) { this.orderQty = o; }
+    public Date getCurrentIssue() { return currentIssue; }
+    public void setCurrentIssue(Date d) { this.currentIssue = d; }
+
+    @Override
+    public String toString() {
+        return "Magazine{orderQty=" + orderQty + ", issue=" + currentIssue + ", " + super.toString() + "}";
+    }
+}
+
+```
+
+--- FILE: src/main/java/csd230/services/CustomUserDetailsService.java ---
+```
+package csd230.services;
+import csd230.entities.UserEntity;
+import csd230.repositories.UserEntityRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+    @Autowired
+    private UserEntityRepository userRepository;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        // Convert our UserEntity to Spring Security's UserDetails
+        return User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole())
+                .build();
+    }
+}
+
 ```
 
 --- FILE: src/main/java/csd230/entities/ProductEntity.java ---
 ```
 package csd230.entities;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import csd230.pojos.SaleableItem;
 import jakarta.persistence.*;
+
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "product_type", discriminatorType = DiscriminatorType.STRING)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "productType", visible = true)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = BookEntity.class, name = "BookEntity"),
-        @JsonSubTypes.Type(value = MagazineEntity.class, name = "MagazineEntity"),
-        @JsonSubTypes.Type(value = LaptopEntity.class, name = "LaptopEntity")
-})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class ProductEntity implements Serializable, SaleableItem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Double price;
 
-    private Double price; // Object Double avoids the "null into double" crash
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "products")
+    private Set<CartEntity> carts = new HashSet<>();
+
+    public Set<CartEntity> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(Set<CartEntity> carts) {
+        this.carts = carts;
+    }
+
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public Double getPrice() { return price; }
-    public void setPrice(Double price) { this.price = price; }
-    public String getProductType() { return this.getClass().getSimpleName(); }
+
+
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "id=" + id +
+                ", price=" + price +
+                "} : "+super.toString();
+    }
+
+
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getProductType() {
+        return this.getClass().getSimpleName();
+    }
+
 }
+
+
+
+
 ```
 
 --- FILE: src/main/java/csd230/entities/ElectronicDeviceEntity.java ---
@@ -4399,69 +6575,237 @@ public class LaptopEntity extends ElectronicDeviceEntity {
 --- FILE: src/main/java/csd230/entities/PublicationEntity.java ---
 ```
 package csd230.entities;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 @Entity
 public abstract class PublicationEntity extends ProductEntity {
     private String title;
-    private Integer copies; // Object Integer avoids "null into int" crash
-
+    @Column(name = "stock_copies")
+    private Integer copies;
     public PublicationEntity() {}
     public PublicationEntity(String t, Double p, Integer c) {
         this.title = t;
         this.setPrice(p);
         this.copies = c;
     }
+    @Override public void sellItem() {
+        if (copies > 0) { copies--; System.out.println("Sold '" + title + "'. Remaining copies: " + copies); }
+        else { System.out.println("Cannot sell '" + title + "'. Out of stock."); }
+    }
+
     public String getTitle() { return title; }
     public void setTitle(String t) { this.title = t; }
-    public Integer getCopies() { return copies; }
-    public void setCopies(Integer c) { this.copies = c; }
-    @Override public void sellItem() { if (copies > 0) copies--; }
+
+    public Integer getCopies() {
+        return copies;
+    }
+
+    public void setCopies(Integer copies) {
+        this.copies = copies;
+    }
+
+    @Override public String toString() { return "Pub{title='" + title + ", copies=" + copies + "}"; }
 }
+
+```
+
+--- FILE: src/main/java/csd230/entities/CartEntity.java ---
+```
+package csd230.entities;
+
+import jakarta.persistence.*;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "cart_entity")
+public class CartEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+    // linkedhashset for NO duplicate items
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "cart_products",
+            joinColumns = @JoinColumn(name = "cart_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<ProductEntity> products = new LinkedHashSet<>();
+
+    public void addProduct(ProductEntity product) {
+        this.products.add(product);
+        product.getCarts().add(this); // Maintain the link on both sides
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Set<ProductEntity> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<ProductEntity> products) {
+        this.products = products;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+}
+```
+
+--- FILE: src/main/java/csd230/entities/UserEntity.java ---
+```
+
+package csd230.entities;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "users")
+public class UserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true, nullable = false)
+    private String username;
+    @Column(nullable = false)
+    private String password;
+    private String role; // e.g., "ADMIN", "USER"
+    // Constructors
+    public UserEntity() {}
+    public UserEntity(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+}
+
 ```
 
 --- FILE: src/main/java/csd230/entities/BookEntity.java ---
 ```
 package csd230.entities;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+
+import java.util.Objects;
 
 @Entity @DiscriminatorValue("BOOK")
 public class BookEntity extends PublicationEntity {
     private String author;
     public BookEntity() {}
-    public BookEntity(String t, Double p, Integer c, String a) {
-        super(t, p, c);
-        this.author = a;
-    }
+    public BookEntity(String t, Double p, Integer c, String a) { super(t, p, c); this.author = a; }
     public String getAuthor() { return author; }
     public void setAuthor(String a) { this.author = a; }
+
+    @Override
+    public String toString() {
+        return "BookEntity{" +
+                "author='" + author + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BookEntity that = (BookEntity) o;
+        return Objects.equals(author, that.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(author);
+    }
 }
+
+```
+
+--- FILE: src/main/java/csd230/entities/DiscMagEntity.java ---
+```
+package csd230.entities;
+
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+import java.time.LocalDateTime;
+@Entity @DiscriminatorValue("DISCMAG")
+public class DiscMagEntity extends MagazineEntity {
+    private boolean hasDisc;
+    public DiscMagEntity() {}
+    public DiscMagEntity(String t, double p, int c, int o, LocalDateTime d, boolean h) { super(t, p, c, o, d); this.hasDisc = h; }
+    public boolean isHasDisc() { return hasDisc; }
+    public void setHasDisc(boolean h) { this.hasDisc = h; }
+    @Override public String toString() { return "DiscMag{disc=" + hasDisc + ", " + super.toString() + "}"; }
+}
+
 ```
 
 --- FILE: src/main/java/csd230/entities/MagazineEntity.java ---
 ```
 package csd230.entities;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity @DiscriminatorValue("MAGAZINE")
 public class MagazineEntity extends PublicationEntity {
-    private Integer orderQty;
+    private int orderQty;
+
+    // NEW: Tells Spring exactly how to parse the React date string
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime currentIssue;
 
     public MagazineEntity() {}
-    public MagazineEntity(String t, Double p, Integer c, Integer o, LocalDateTime d) {
+
+    // NEW: Forces Spring to ignore this and use the empty constructor + setters
+    @JsonIgnore
+    public MagazineEntity(String t, double p, int c, int o, LocalDateTime d) {
         super(t, p, c);
         this.orderQty = o;
         this.currentIssue = d;
     }
-    public Integer getOrderQty() { return orderQty; }
-    public void setOrderQty(Integer o) { this.orderQty = o; }
-    public LocalDateTime getCurrentIssue() { return currentIssue; }
+
+    public int getOrderQty() { return orderQty; }
+    public void setOrderQty(int o) { this.orderQty = o; }
     public void setCurrentIssue(LocalDateTime d) { this.currentIssue = d; }
+    public LocalDateTime getCurrentIssue() { return currentIssue; }
+
+    @Override
+    public String toString() { return "Mag{issue=" + currentIssue + ", " + super.toString() + "}"; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        MagazineEntity that = (MagazineEntity) o;
+        return orderQty == that.orderQty && Objects.equals(currentIssue, that.currentIssue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderQty, currentIssue);
+    }
 }
+
 ```
 
 --- FILE: src/main/java/csd230/entities/SaleableItem.java ---
@@ -4471,6 +6815,35 @@ package csd230.entities;
 public interface SaleableItem {
     void sellItem();
     Double getPrice();
+}
+
+```
+
+--- FILE: src/main/java/csd230/entities/TicketEntity.java ---
+```
+package csd230.entities;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity @DiscriminatorValue("TICKET")
+public class TicketEntity extends ProductEntity {
+    private String description;
+    @Column(name = "ticket_price")
+    private Double price; // Capital 'D' Double
+    public TicketEntity() {}
+    public TicketEntity(String d, Double p) { this.description = d; this.price = p; }
+
+    @Override public void sellItem() { System.out.println("Selling Ticket: " + description + " for $" + price); }
+    @Override public Double getPrice() { return price; }
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getDescription() { return description; }
+    public void setDescription(String d) { this.description = d; }
+    @Override public String toString() { return "Ticket{desc='" + description + "', price=" + price + "}"; }
 }
 
 ```
