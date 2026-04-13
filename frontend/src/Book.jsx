@@ -40,7 +40,10 @@ function Book({ id, title, author, price, onUpdate, onDelete }) {
                         {/* ADD TO CART - Visible to all */}
                         <button
                             style={{background:'#6366f1', color:'white'}}
-                            onClick={() => api.post(`/cart/add/${id}`).then(() => alert("Added to cart!"))}
+                            onClick={() => api.post(`/cart/add/${id}`).then(() => {
+                                alert("Book added to cart!");
+                                window.dispatchEvent(new Event('cartUpdated'));
+                            })}
                         >
                             🛒 Add to Cart
                         </button>

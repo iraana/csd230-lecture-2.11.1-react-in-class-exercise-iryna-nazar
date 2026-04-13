@@ -1,46 +1,45 @@
 import { useState } from 'react';
-import { useAuth } from './provider/authProvider'; // Import Auth Context
+import { useAuth } from './provider/authProvider';
 import api from './api/axiosConfig';
 
-function Laptop({ id, brand, price, ramSize, onUpdate, onDelete }) {
-    const { isAdmin } = useAuth(); // NEW: Check role
+function Ticket({ id, description, price, onUpdate, onDelete }) {
+    const { isAdmin } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
-    const [tBrand, setTBrand] = useState(brand);
-    const [tPrice, setTPrice] = useState(price);
+    const [tDesc, setTDesc] = useState(description || "");
+    const [tPrice, setTPrice] = useState(price || 0);
 
     const save = () => {
         onUpdate(id, {
             id,
-            brand: tBrand,
+            description: tDesc, // Must be 'description' to match Java
             price: parseFloat(tPrice) || 0.0,
-            ramSize: ramSize
-        });
+            productType: "TicketEntity"
+        }, 'tickets', (data) => { /* App.jsx logic */ });
         setIsEditing(false);
     };
+
 
     return (
         <div className="admin-card">
             {isEditing ? (
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    <input style={{flex: 2}} value={tBrand} onChange={e => setTBrand(e.target.value)} />
+                    <input style={{ flex: 2 }} value={tDesc} onChange={e => setTDesc(e.target.value)} />
                     <input type="number" value={tPrice} onChange={e => setTPrice(e.target.value)} />
                     <button style={{background:'#10b981', color:'white'}} onClick={save}>Save</button>
                     <button style={{background:'#64748b', color:'white'}} onClick={() => setIsEditing(false)}>X</button>
-
                 </div>
             ) : (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{textAlign: 'left'}}>
-                        <h3 style={{margin:0}}>💻 {brand}</h3>
-                        <p style={{margin:0, opacity: 0.7}}>RAM: {ramSize}GB | Price: ${price?.toFixed(2)}</p>
+                    <div style={{ textAlign: 'left' }}>
+                        <h3 style={{ margin: 0 }}>🎟 {description}</h3>
+                        <p style={{ margin: 0, opacity: 0.6 }}>Event Ticket | ${Number(price || 0).toFixed(2)}</p>
                     </div>
-                    <div style={{display:'flex', gap: '8px'}}>
-                        {/* ROLE PROTECTION */}
-                        {/* ADD TO CART - Visible to all */}
+                    <div style={{ display: 'flex', gap: '10px' }}>
                         <button
-                            style={{background:'#6366f1', color:'white'}}
+                            style={{ background: 'var(--primary)', color: 'white' }}
+                            // We call a global window function to update the badge (defined in App.jsx later)
                             onClick={() => api.post(`/cart/add/${id}`).then(() => {
-                                alert("Laptop added to cart!");
+                                alert("Ticket added to cart!");
                                 window.dispatchEvent(new Event('cartUpdated'));
                             })}
                         >
@@ -48,11 +47,8 @@ function Laptop({ id, brand, price, ramSize, onUpdate, onDelete }) {
                         </button>
                         {isAdmin && (
                             <>
-                                <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
-                                <button style={{background:'#ef4444', color:'white'}}
-                                        onClick={() => api.delete(`/laptops/${id}`).then(onDelete)}>
-                                    Delete
-                                </button>
+                                <button style={{ background: 'var(--warning)', color: 'black' }} onClick={() => setIsEditing(true)}>Edit</button>
+                                <button style={{ background: 'var(--accent)', color: 'white' }} onClick={() => api.delete(`/tickets/${id}`).then(onDelete)}>Delete</button>
                             </>
                         )}
                     </div>
@@ -62,4 +58,4 @@ function Laptop({ id, brand, price, ramSize, onUpdate, onDelete }) {
     );
 }
 
-export default Laptop;
+export default Ticket;

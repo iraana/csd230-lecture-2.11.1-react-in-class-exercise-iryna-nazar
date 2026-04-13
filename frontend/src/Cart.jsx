@@ -23,8 +23,15 @@ function Cart() {
     const handleRemove = async (productId) => {
         try {
             await api.delete(`/cart/remove/${productId}`);
-            fetchCart(); // Refresh list
+
+            // 1. Refresh the local list on the Cart page
+            await fetchCart();
+
+            // 2. BROADCAST the update so the Navbar badge sees it!
+            window.dispatchEvent(new Event('cartUpdated'));
+
         } catch (err) {
+            console.error("Remove error:", err);
             alert("Failed to remove item.");
         }
     };

@@ -1,6 +1,6 @@
 import { useAuth } from './provider/authProvider';
 
-function Home({ bookCount, magCount, lapCount }) {
+function Home({ bookCount, magCount, lapCount, phoneCount, ticketCount }) {
     const { isAdmin } = useAuth();
 
     return (
@@ -20,21 +20,35 @@ function Home({ bookCount, magCount, lapCount }) {
                 <div style={cardStyle('#6366f1')}>
                     <span style={{fontSize: '3rem'}}>📚</span>
                     <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{bookCount}</h2>
-                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>TITLES AVAILABLE</p>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>BOOKS</p>
                 </div>
 
                 {/* MAGAZINES CARD */}
                 <div style={cardStyle('#10b981')}>
                     <span style={{fontSize: '3rem'}}>📰</span>
                     <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{magCount}</h2>
-                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>MAGAZINE ISSUES</p>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>MAGAZINES</p>
                 </div>
 
                 {/* LAPTOPS CARD */}
                 <div style={statCard('#f43f5e')}>
                     <span style={{fontSize: '3rem'}}>💻</span>
                     <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{lapCount}</h2>
-                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>ELECTRONIC DEVICES</p>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>LAPTOPS</p>
+                </div>
+
+                {/* PHONES CARD */}
+                <div style={statCard('#ff703a')}>
+                    <span style={{fontSize: '3rem'}}>📱</span>
+                    <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{phoneCount}</h2>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>PHONES</p>
+                </div>
+
+                {/* TICKETS CARD */}
+                <div style={statCard('#5c95d4')}>
+                    <span style={{fontSize: '3rem'}}>🎟</span>
+                    <h2 style={{fontSize:'3rem', color:'white', margin:'10px 0'}}>{ticketCount}</h2>
+                    <p style={{margin:0, opacity:0.8, fontWeight: '800'}}>TICKETS</p>
                 </div>
             </div>
 

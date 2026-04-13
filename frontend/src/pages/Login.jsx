@@ -26,7 +26,7 @@ const Login = () => {
 
     return (
         <div style={containerStyle}>
-            <h1 style={{ fontSize: '3rem', marginBottom: '30px' }}>Store Inventory For LiveDemo</h1>
+            <h1 style={{ fontSize: '3rem', marginBottom: '30px' }}>Store Inventory</h1>
 
             {/* Layout Wrapper to keep Alert and Form together */}
             <div style={{ width: '100%', maxWidth: '400px' }}>

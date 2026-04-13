@@ -14,12 +14,18 @@ import Cart from './Cart';
 import { useAuth } from './provider/authProvider'; // Added useAuth import
 import api from './api/axiosConfig'; // Added our custom Axios instance
 import './App.css';
+import Phone from "./Phone.jsx";
+import PhoneForm from "./PhoneForm.jsx";
+import Ticket from "./Ticket.jsx";
+import TicketForm from "./TicketForm.jsx";
 
 function App() {
     const { token } = useAuth(); // NEW: Get token for route protection
     const [books, setBooks] = useState([]);
     const [magazines, setMagazines] = useState([]);
     const [laptops, setLaptops] = useState([]);
+    const [phones, setPhones] = useState([]);
+    const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -32,14 +38,18 @@ function App() {
 
         try {
             // Using our Axios api instead of raw fetch so JWT is attached!
-            const [b, m, l] = await Promise.all([
+            const [b, m, l,p,t] = await Promise.all([
                 api.get('/books'),
                 api.get('/magazines'),
-                api.get('/laptops')
+                api.get('/laptops'),
+                api.get('/phones'),
+                api.get('/tickets')
             ]);
             setBooks(b.data);
             setMagazines(m.data);
             setLaptops(l.data);
+            setPhones(p.data || []);
+            setTickets(t.data || []);
             setLoading(false);
         } catch (e) {
             console.error("Database offline or auth failed");
@@ -83,8 +93,15 @@ function App() {
                 <Route path="/cart" element={token ? <Cart /> : <Navigate to="/login" />} />
 
                 {/* 3. Protected Dashboard (If no token, redirect to login) */}
-                <Route path="/" element={token ? <Home bookCount={books.length} magCount={magazines.length} lapCount={laptops.length} /> : <Navigate to="/login" />} />
-
+                <Route path="/" element={token ? (
+                    <Home
+                        bookCount={books.length}
+                        magCount={magazines.length}
+                        lapCount={laptops.length}
+                        phoneCount={phones.length}
+                        ticketCount={tickets.length}
+                    />
+                ) : <Navigate to="/login" />} />
                 {/* 4. Protected Inventory Routes (If no token, redirect to login) */}
                 <Route path="/inventory" element={token ? (
                     <div><h1>Book Inventory</h1>{books.map(i => <Book key={i.id} {...i} onUpdate={(id, d) => handleUpdate(id, d, 'books', setBooks)} onDelete={refreshData}/>)}</div>
@@ -103,6 +120,41 @@ function App() {
                 ) : <Navigate to="/login" />} />
 
                 <Route path="/add-laptop" element={token ? <LaptopForm onAdded={(n) => { setLaptops([...laptops, n]); navigate('/laptops'); }} /> : <Navigate to="/login" />} />
+
+
+                <Route path="/phones" element={token ? (
+                    <div>
+                        <h1>Phone Inventory</h1>
+                        {phones.map(i => (
+                            <Phone
+                                key={i.id}
+                                {...i}
+                                onUpdate={(id, d) => handleUpdate(id, d, 'phones', setPhones)}
+                                onDelete={refreshData}
+                            />
+                        ))}
+                    </div>
+                ) : <Navigate to="/login" />} />
+
+                <Route path="/add-phone" element={token ? <PhoneForm onAdded={(n) => { setPhones([...laptops, n]); navigate('/phones'); }} /> : <Navigate to="/login" />} />
+
+                <Route path="/tickets" element={token ? (
+                    <div>
+                        <h1>Ticket Inventory</h1>
+                        {tickets.map(i => (
+                            <Ticket
+                                key={i.id}
+                                {...i}
+                                onUpdate={(id, d) => handleUpdate(id, d, 'tickets', setTickets)}
+                                onDelete={refreshData}
+                            />
+                        ))}
+                    </div>
+                ) : <Navigate to="/login" />} />
+
+                <Route path="/add-ticket" element={token ? <TicketForm onAdded={(n) => { setTickets([...tickets, n]); navigate('/tickets'); }} /> : <Navigate to="/login" />} />
+
+
             </Routes>
         </div>
     );

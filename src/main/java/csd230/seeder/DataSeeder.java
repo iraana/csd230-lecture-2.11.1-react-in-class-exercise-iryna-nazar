@@ -18,15 +18,22 @@ public class DataSeeder implements CommandLineRunner {
     private final MagazineRepository magazineRepository;
     private final LaptopRepository laptopRepository;
     private final UserEntityRepository userRepository; // NEW
+    private final DiscMagRepository discMagRepository;
+    private final PhoneRepository phoneRepository;
+    private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder; // NEW
     private final Faker faker = new Faker();
 
     // Updated constructor to include User items
     public DataSeeder(BookRepository br, MagazineRepository mr, LaptopRepository lr,
+                      PhoneRepository pr, TicketRepository tr, DiscMagRepository dmr,
                       UserEntityRepository ur, PasswordEncoder pe) {
         this.bookRepository = br;
         this.magazineRepository = mr;
         this.laptopRepository = lr;
+        this.phoneRepository = pr;
+        this.ticketRepository = tr;
+        this.discMagRepository = dmr;
         this.userRepository = ur;
         this.passwordEncoder = pe;
     }
@@ -44,6 +51,15 @@ public class DataSeeder implements CommandLineRunner {
 
         if (laptopRepository.count() == 0) {
             seedLaptops(5);
+        }
+
+        if (phoneRepository.count() == 0) {
+            phoneRepository.save(new PhoneEntity("iPhone 15", 999.99, 128));
+            phoneRepository.save(new PhoneEntity("Samsung S24", 899.99, 256));
+        }
+        if (ticketRepository.count() == 0) {
+            ticketRepository.save(new TicketEntity("Tech Conference 2026", 150.00));
+            ticketRepository.save(new TicketEntity("Local Book Fair", 10.00));
         }
 
         if (userRepository.count() == 0) {

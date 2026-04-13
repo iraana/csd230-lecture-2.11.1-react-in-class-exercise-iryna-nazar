@@ -1,19 +1,22 @@
 import { useState } from 'react';
-import { useAuth } from './provider/authProvider'; // Import Auth Context
+import { useAuth } from './provider/authProvider';
 import api from './api/axiosConfig';
 
-function Laptop({ id, brand, price, ramSize, onUpdate, onDelete }) {
-    const { isAdmin } = useAuth(); // NEW: Check role
+function Phone({ id, brand, price, storage, onUpdate, onDelete }) {
+    const { isAdmin } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [tBrand, setTBrand] = useState(brand);
     const [tPrice, setTPrice] = useState(price);
 
     const save = () => {
+        // We only pass id and data.
+        // The path ('phones') and setter (setPhones) are already handled in App.jsx
         onUpdate(id, {
             id,
             brand: tBrand,
             price: parseFloat(tPrice) || 0.0,
-            ramSize: ramSize
+            storage: storage,
+            productType: "PhoneEntity" // Important for Spring Boot Polymorphism
         });
         setIsEditing(false);
     };
@@ -31,28 +34,18 @@ function Laptop({ id, brand, price, ramSize, onUpdate, onDelete }) {
             ) : (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{textAlign: 'left'}}>
-                        <h3 style={{margin:0}}>💻 {brand}</h3>
-                        <p style={{margin:0, opacity: 0.7}}>RAM: {ramSize}GB | Price: ${price?.toFixed(2)}</p>
+                        <h3 style={{margin:0}}>📱 {brand}</h3>
+                        <p style={{margin:0, color: 'var(--text-muted)'}}>{storage}GB Storage | ${price?.toFixed(2)}</p>
                     </div>
                     <div style={{display:'flex', gap: '8px'}}>
-                        {/* ROLE PROTECTION */}
-                        {/* ADD TO CART - Visible to all */}
-                        <button
-                            style={{background:'#6366f1', color:'white'}}
-                            onClick={() => api.post(`/cart/add/${id}`).then(() => {
-                                alert("Laptop added to cart!");
-                                window.dispatchEvent(new Event('cartUpdated'));
-                            })}
-                        >
-                            🛒 Add to Cart
-                        </button>
+                        <button style={{background: 'var(--primary)', color:'white'}} onClick={() => api.post(`/cart/add/${id}`).then(() => {
+                            alert("Phone added to cart!");
+                            window.dispatchEvent(new Event('cartUpdated'));
+                        })}>🛒 Add to Cart</button>
                         {isAdmin && (
                             <>
-                                <button style={{background:'#f59e0b', color:'black', marginRight:'8px'}} onClick={() => setIsEditing(true)}>Edit</button>
-                                <button style={{background:'#ef4444', color:'white'}}
-                                        onClick={() => api.delete(`/laptops/${id}`).then(onDelete)}>
-                                    Delete
-                                </button>
+                                <button style={{background: '#f59e0b'}} onClick={() => setIsEditing(true)}>Edit</button>
+                                <button style={{background: 'var(--accent)', color:'white'}} onClick={() => api.delete(`/phones/${id}`).then(onDelete)}>Delete</button>
                             </>
                         )}
                     </div>
@@ -61,5 +54,4 @@ function Laptop({ id, brand, price, ramSize, onUpdate, onDelete }) {
         </div>
     );
 }
-
-export default Laptop;
+export default Phone;
