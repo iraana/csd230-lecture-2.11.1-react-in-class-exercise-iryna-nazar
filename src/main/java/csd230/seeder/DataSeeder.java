@@ -54,12 +54,11 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         if (phoneRepository.count() == 0) {
-            phoneRepository.save(new PhoneEntity("iPhone 15", 999.99, 128));
-            phoneRepository.save(new PhoneEntity("Samsung S24", 899.99, 256));
+            seedPhones(10);
         }
+
         if (ticketRepository.count() == 0) {
-            ticketRepository.save(new TicketEntity("Tech Conference 2026", 150.00));
-            ticketRepository.save(new TicketEntity("Local Book Fair", 10.00));
+            seedTickets(10);
         }
 
         if (userRepository.count() == 0) {
@@ -73,6 +72,34 @@ public class DataSeeder implements CommandLineRunner {
 
             System.out.println("✅ Default users created");
         }
+    }
+
+    private void seedPhones(int count) {
+        String[] brands = {"Apple", "Samsung", "Google", "OnePlus", "Xiaomi", "Motorola"};
+        for (int i = 0; i < count; i++) {
+            // Generate a random brand + model name
+            String brandName = brands[faker.number().numberBetween(0, brands.length)] + " " + faker.commerce().productName();
+            PhoneEntity phone = new PhoneEntity(
+                    brandName,
+                    faker.number().randomDouble(2, 400, 1400),
+                    faker.options().option(64, 128, 256, 512)
+            );
+            phoneRepository.save(phone);
+        }
+        System.out.println(" - Created " + count + " Phones");
+    }
+
+    private void seedTickets(int count) {
+        for (int i = 0; i < count; i++) {
+            // Generate random event names
+            String event = faker.university().name() + " " + faker.options().option("Gala", "Conference", "Festival", "Expo");
+            TicketEntity ticket = new TicketEntity(
+                    event,
+                    faker.number().randomDouble(2, 15, 300)
+            );
+            ticketRepository.save(ticket);
+        }
+        System.out.println(" - Created " + count + " Tickets");
     }
 
     private void seedBooks(int count) {
