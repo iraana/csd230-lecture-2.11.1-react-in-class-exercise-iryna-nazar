@@ -38,3 +38,21 @@ build/
 ### VS Code ###
 .vscode/
 .git
+
+# --- Mobile (Flutter) ---
+**/mobile/.dart_tool/
+**/mobile/.packages
+**/mobile/.flutter-plugins
+**/mobile/.flutter-plugins-dependencies
+**/mobile/build/
+**/mobile/android/.gradle/
+**/mobile/android/local.properties
+**/mobile/ios/Pods/
+**/mobile/ios/.generated/
+**/mobile/ios/Flutter/Generated.xcconfig
+**/mobile/ios/Flutter/flutter_export_environment.sh
+
+# --- OS Specific ---
+
+.DS_Store?
+**/._*
